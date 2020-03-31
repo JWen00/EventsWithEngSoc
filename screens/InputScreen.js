@@ -5,7 +5,7 @@ import * as WebBrowser from "expo-web-browser";
 import { RectButton, ScrollView } from "react-native-gesture-handler";
 
 import { GlobalStyles } from "../constants/GlobalStyle";
-export default function HomeScreen() {
+export default function InputScreen() {
   return (
     <View style={GlobalStyles.container}>
       <View style={styles.welcomeContainer}>
@@ -15,9 +15,6 @@ export default function HomeScreen() {
   );
 }
 
-HomeScreen.navigationOptions = {
-  header: null
-};
 /*
   function handlePress() {
     WebBrowser.openBrowserAsync('LINK');

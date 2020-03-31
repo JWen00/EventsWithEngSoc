@@ -13,7 +13,9 @@ const INITIAL_ROUTE_NAME = "Home";
 export default function BottomTabNavigator({ navigation, route }) {
   // navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
-  navigation.setOptions({ headerTitle: () => <Header title={getHeaderTitle(route)}/> });
+  navigation.setOptions({
+    headerTitle: () => <Header title={getHeaderTitle(route)} />
+  });
 
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
@@ -23,7 +25,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "Home",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="md-home" />
+            <TabBarIcon size={30} focused={focused} name="md-home" />
           )
         }}
       />
@@ -33,7 +35,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "Enter zID",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="md-add" />
+            <TabBarIcon size={30} focused={focused} name="md-add" />
           )
         }}
       />
@@ -43,7 +45,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "View Attendees",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="md-list-box" />
+            <TabBarIcon size={30} focused={focused} name="md-list-box" />
           )
         }}
       />

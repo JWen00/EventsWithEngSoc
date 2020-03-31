@@ -7,7 +7,9 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   contentContainer: {
-    paddingTop: 30
+    alignItems: "center",
+    marginTop: 30,
+    marginBottom: 20
   },
 
   titleText: {
