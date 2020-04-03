@@ -5,15 +5,15 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Modal
+  Modal,
+  FlatList
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import { MonoText } from "../components/StyledText";
 import { GlobalStyles } from "../constants/GlobalStyle";
 import TabBarIcon from "../components/TabBarIcon";
 
-const [modalVisible, setModalVisible] = useState(false);
 export default function HomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <View style={GlobalStyles.container}>
       {/* Main Content */}
@@ -40,14 +40,18 @@ export default function HomeScreen() {
             setModalVisible(!modalVisible);
           }}
         >
-          <Text style={GlobalStyles.paragraph}> Hi! Content here :)</Text>
-          {/* <ScrollView directionalLockEnabled={true} contentContainerStyle={styles.modalContent}          > 
+          <ScrollView
+            directionalLockEnabled={true}
+            contentContainerStyle={styles.modalContent}
+          >
             <TouchableWithoutFeedback>
               <View style={styles.modalContent2}>
-                <Text style={GlobalStyles.paragraph}> Hi! Content here :)</Text>
+                <Text style={GlobalStyles.paragraph}>
+                  Hi! Sign someone in here! Currently Making Options for you C:
+                </Text>
               </View>
             </TouchableWithoutFeedback>
-          </ScrollView> */}
+          </ScrollView>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -77,9 +81,18 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
+    display: "flex",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    top: 250,
+    shadowColor: "black",
+    elevation: 5
   },
   modalContent: {
     paddingVertical: 20
+    // backgroundColor: "purple"
   }
 });
