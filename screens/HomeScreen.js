@@ -8,9 +8,11 @@ import {
   Modal,
   FlatList
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Icon from "../components/Icon";
 import { ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../constants/GlobalStyle";
-import TabBarIcon from "../components/TabBarIcon";
+import Colors from "../constants/Colors";
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -28,7 +30,7 @@ export default function HomeScreen() {
           setModalVisible(true);
         }}
       >
-        <TabBarIcon size={45} name="md-add" />
+         <Icon size={45} focused={Colors.white} name="md-add"/>
       </TouchableOpacity>
 
       {/* Modal For Adding Attendee */}
@@ -70,11 +72,11 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 30,
     borderRadius: 100 / 2,
-    backgroundColor: "#1B324F", // Ocean Blue
+    backgroundColor: Colors.oceanBlue, // Ocean Blue
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    shadowOffset: { width: 10, height: 10 },
+    // shadowOffset: { width: 10, height: 10 },
     shadowColor: "black",
     shadowOpacity: 1.0,
     elevation: 5

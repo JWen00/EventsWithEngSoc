@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import TabBarIcon from "../components/TabBarIcon";
+import Icon from "../components/Icon";
 import HomeScreen from "../screens/HomeScreen";
 import InputScreen from "../screens/InputScreen";
 import AttendeesScreen from "../screens/AttendeeScreen";
@@ -25,7 +25,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "Home",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon size={30} focused={focused} name="md-home" />
+            <Icon size={30} focused={focused} name="md-home" />
           )
         }}
       />
@@ -35,7 +35,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "Enter zID",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon size={30} focused={focused} name="md-add" />
+            <Icon size={30} focused={focused} name="md-add" />
           )
         }}
       />
@@ -45,7 +45,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: "View Attendees",
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon size={30} focused={focused} name="md-list-box" />
+            <Icon size={30} focused={focused} name="md-list-box" />
           )
         }}
       />

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 export default function Header({ title }) {
   return (
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: "bold",
     fontSize: 20,
-    color: "#071526",
+    color: Colors.navyBlue,
     letterSpacing: 0.8,
     alignContent: "center"
   },

@@ -13,7 +13,7 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "#333"
   },
