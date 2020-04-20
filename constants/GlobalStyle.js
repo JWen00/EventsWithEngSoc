@@ -1,21 +1,22 @@
 import { StyleSheet } from "react-native";
+import Colors from "./Colors";
 
 export const GlobalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
 
   contentContainer: {
     alignItems: "center",
     marginTop: 30,
-    marginBottom: 20
+    marginBottom: 20,
   },
 
   titleText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333"
+    color: "#333",
   },
   paragraph: {
     marginTop: 2,
@@ -23,5 +24,4 @@ export const GlobalStyles = StyleSheet.create({
     lineHeight: 20,
     color: Colors.grey,
   },
-
 });
