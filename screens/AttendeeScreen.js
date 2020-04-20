@@ -60,28 +60,31 @@ class SearchBar extends Component {
   render() {
     return (
       <View>
-        <View styles="styles.searchBarContent">
-          <Icon size={18} focused={Colors.successGreen} name="md-search" />
-          style={styles.searchBar}
-          onChangeText=
-          {(query) => {
-            this.setState({
-              text: query,
-              data: this.filter(query),
-            });
-          }}
-          onFocus=
-          {() =>
-            this.setState({
-              text: "",
-              isFocused: true,
-              data: AttendeeData,
-            })
-          }
-          onEndEditing={() => this.setState({ isFocused: false })}
-          value={this.state.text}
+        <View style={styles.searchBarContent}>
+          <View style={styles.searchBarContent}>
+            <Icon size={30} name="md-search" />
+          </View>
+          <TextInput
+            style={styles.searchBar}
+            onChangeText={(query) => {
+              this.setState({
+                text: query,
+                data: this.filter(query),
+              });
+            }}
+            onFocus={() =>
+              this.setState({
+                text: "",
+                isFocused: true,
+                data: AttendeeData,
+              })
+            }
+            onEndEditing={() => this.setState({ isFocused: false })}
+            value={this.state.text}
           />
-          <Icon size={15} focused={Colors.successGreen} name="md-close" />
+          <View style={styles.searchBarContent}>
+            <Icon size={27} name="md-close" />
+          </View>
         </View>
 
         {/* <Text>Searched Item: {this.state.text}</Text>
@@ -136,21 +139,28 @@ export default function AttendeeScreen() {
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    marginVertical: 10,
+    marginVertical: 12,
     marginHorizontal: 10,
+    textAlignVertical: "center",
   },
   searchBarContent: {
     display: "flex",
     justifyContent: "space-between",
+    backgroundColor: Colors.veryLightGrey,
     flexDirection: "row",
+    padding: 5,
+    borderRadius: 35,
+  },
+  searchBarIcon: {
+    top: 10,
+    width: 10,
+    backgroundColor: Colors.navyBlue,
   },
 
   searchBar: {
-    padding: 10,
-    paddingLeft: 15,
-    height: 45,
-    borderRadius: 20,
-    backgroundColor: Colors.veryLightGrey,
+    height: 35,
+    right: 25,
+    width: 250,
   },
   attendeeList: {
     flex: 1,
