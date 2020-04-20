@@ -60,15 +60,18 @@ class SearchBar extends Component {
   render() {
     return (
       <View>
-        <TextInput
+        <View styles="styles.searchBarContent">
+          <Icon size={18} focused={Colors.successGreen} name="md-search" />
           style={styles.searchBar}
-          onChangeText={(query) => {
+          onChangeText=
+          {(query) => {
             this.setState({
               text: query,
               data: this.filter(query),
             });
           }}
-          onFocus={() =>
+          onFocus=
+          {() =>
             this.setState({
               text: "",
               isFocused: true,
@@ -77,7 +80,10 @@ class SearchBar extends Component {
           }
           onEndEditing={() => this.setState({ isFocused: false })}
           value={this.state.text}
-        />
+          />
+          <Icon size={15} focused={Colors.successGreen} name="md-close" />
+        </View>
+
         {/* <Text>Searched Item: {this.state.text}</Text>
         <Text>
           Data: {this.state.data == null ? this.state.data : "List is empty"}
@@ -133,6 +139,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 10,
   },
+  searchBarContent: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+
   searchBar: {
     padding: 10,
     paddingLeft: 15,

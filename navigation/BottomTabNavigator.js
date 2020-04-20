@@ -14,7 +14,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   // navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
   navigation.setOptions({
-    headerTitle: () => <Header title={getHeaderTitle(route)} />
+    headerTitle: () => <Header title={getHeaderTitle(route)} />,
   });
 
   return (
@@ -24,9 +24,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={HomeScreen}
         options={{
           title: "Home",
-          tabBarIcon: ({ focused }) => (
-            <Icon size={30} focused={focused} name="md-home" />
-          )
+          tabBarIcon: ({ focused }) => <Icon size={30} name="md-home" />,
         }}
       />
       <BottomTab.Screen
@@ -34,9 +32,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={InputScreen}
         options={{
           title: "Enter zID",
-          tabBarIcon: ({ focused }) => (
-            <Icon size={30} focused={focused} name="md-add" />
-          )
+          tabBarIcon: ({ focused }) => <Icon size={30} name="md-add" />,
         }}
       />
       <BottomTab.Screen
@@ -44,9 +40,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         component={AttendeesScreen}
         options={{
           title: "View Attendees",
-          tabBarIcon: ({ focused }) => (
-            <Icon size={30} focused={focused} name="md-list-box" />
-          )
+          tabBarIcon: ({ focused }) => <Icon size={30} name="md-list-box" />,
         }}
       />
     </BottomTab.Navigator>
