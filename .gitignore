@@ -3,3 +3,5 @@
 web-build/
 node_modules/
 yarn-error.log/ 
+babel.config.js/
+
