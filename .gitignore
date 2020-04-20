@@ -1,4 +1,5 @@
 .expo/
+.vscode/
 web-build/
 node_modules/
 yarn-error.log/ 

@@ -18,7 +18,10 @@ export const GlobalStyles = StyleSheet.create({
     color: "#333"
   },
   paragraph: {
-    marginVertical: 8,
-    lineHeight: 20
-  }
+    marginTop: 2,
+    marginBottom: 5,
+    lineHeight: 20,
+    color: Colors.grey,
+  },
+
 });
