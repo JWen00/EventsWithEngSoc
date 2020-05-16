@@ -16,9 +16,9 @@ export default function InputScreen() {
 }
 
 /*
-  function handlePress() {
-    WebBrowser.openBrowserAsync('LINK');
-  }
+        function handlePress() {
+          WebBrowser.openBrowserAsync('LINK');
+        }
 */
 const styles = StyleSheet.create({
   welcomeContainer: {
