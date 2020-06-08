@@ -1,31 +1,12 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Keyboard,
-  BackHandler
-} from "react-native";
+import { Text, View, StyleSheet, TextInput, Keyboard } from "react-native";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 
-import chunk from "lodash/chunk";
 import { GlobalStyles } from "../constants/GlobalStyle";
 import AttendeeData from "../testData";
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
-/* 
-      NOTE: 
-      You need to bind the function so it has access
-      to state and other variables in your class, 
-      not just parameters that pass when you execute  
-      Reference: https://stackoverflow.com/questions/50726014/why-we-need-to-bind-function-in-react-native
 
-      To "un"focus TextInput, use ScrollView and Keyboard.dismiss 
-      Reference: https://stackoverflow.com/questions/43431896/unfocus-a-textinput-in-react-native
-
-
-      */
 function Card(props) {
   return (
     <View style={styles.card}>
@@ -57,7 +38,7 @@ export default class AttendeeScreen extends React.Component {
     super();
     this.state = {
       query: "Search",
-      isFocused: false
+      isFocused: false,
     };
   }
 
@@ -75,20 +56,20 @@ export default class AttendeeScreen extends React.Component {
 
           <ScrollView style={styles.searchBar}>
             <TextInput
-              onChangeText={query => {
+              onChangeText={(query) => {
                 this.setState({
-                  query: query
+                  query: query,
                 });
               }}
               onFocus={() =>
                 this.setState({
                   query: "",
-                  isFocused: true
+                  isFocused: true,
                 })
               }
               onEndEditing={() =>
                 this.setState({
-                  isFocused: false
+                  isFocused: false,
                 })
               }
               value={this.state.query}
@@ -99,7 +80,7 @@ export default class AttendeeScreen extends React.Component {
             onPress={() => {
               this.setState({
                 query: "",
-                isFocused: false
+                isFocused: false,
               });
               Keyboard.dismiss();
             }}
@@ -116,8 +97,8 @@ export default class AttendeeScreen extends React.Component {
     return (
       <View style={styles.attendeeList}>
         {attendees
-          .filter(attendee => attendee.zID.includes(query))
-          .map(filteredAttendee => (
+          .filter((attendee) => attendee.zID.includes(query))
+          .map((filteredAttendee) => (
             <Card
               zID={filteredAttendee.zID}
               name={filteredAttendee.name}
@@ -146,7 +127,7 @@ export default class AttendeeScreen extends React.Component {
 
   render() {
     return (
-      <View style={GlobalStyles.container}>
+      <View style={GlobalStyles.contentContainer}>
         {this.renderSearchBar()}
         {/* <Text>Search Query: {this.state.query}</Text> */}
         {/* <Text>Searchinggg: {this.state.isFocused ? "True" : "False"}</Text> */}
@@ -160,9 +141,9 @@ export default class AttendeeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    marginVertical: 12,
-    marginHorizontal: 10,
-    textAlignVertical: "center"
+    // marginVertical: 12,
+    // marginHorizontal: 10,
+    textAlignVertical: "center",
   },
   searchBarContent: {
     display: "flex",
@@ -170,22 +151,22 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.veryLightGrey,
     flexDirection: "row",
     padding: 5,
-    borderRadius: 35
+    borderRadius: 35,
   },
   searchBarIcon: {
     top: 10,
     width: 10,
-    backgroundColor: Colors.navyBlue
+    backgroundColor: Colors.navyBlue,
   },
 
   searchBar: {
     marginVertical: 5,
     marginHorizontal: 5,
-    color: Colors.grey
+    color: Colors.grey,
   },
   attendeeList: {
     flex: 1,
-    padding: 5
+    padding: 5,
   },
   card: {
     elevation: 2,
@@ -196,7 +177,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     marginHorizontal: 4,
     marginVertical: 6,
-    borderRadius: 10
+    borderRadius: 10,
   },
   cardContent: {
     marginHorizontal: 15,
@@ -204,12 +185,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     display: "flex",
     justifyContent: "space-between",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   cardIcon: {
     flexDirection: "row",
     marginHorizontal: 5,
     marginVertical: 4,
-    marginRight: 2
-  }
+    marginRight: 2,
+  },
 });

@@ -2,17 +2,10 @@ import { StyleSheet } from "react-native";
 import Colors from "./Colors";
 
 export const GlobalStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-
   contentContainer: {
-    alignItems: "center",
-    marginTop: 30,
-    marginBottom: 20,
+    flex: 1,
+    margin: 20,
   },
-
   titleText: {
     fontSize: 16,
     fontWeight: "bold",

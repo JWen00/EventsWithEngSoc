@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Ionicons } from "@expo/vector-icons";
+// https://icons.expo.fyi/
 
 export default function Icon(props) {
   return (
