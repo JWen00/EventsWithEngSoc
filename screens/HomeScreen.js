@@ -1,88 +1,109 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
+import NfcManager, { NfcTech } from "react-native-nfc-manager";
+
 import Icon from "../components/Icon";
 import { GlobalStyles } from "../constants/GlobalStyle";
 import Colors from "../constants/Colors";
-import InputModal from "../components/InputModal";
 import { TextInput } from "react-native-gesture-handler";
 
 /* 
 TODO: Upgrade the form to formik and add error checking.
 */
 
-export default function HomeScreen() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [zID, setZID] = useState("");
-  const [name, setName] = useState("");
-  const [ready, setReady] = useState(false);
-  return (
-    <View style={GlobalStyles.contentContainer}>
-      <Text>Hello, enable NFC to scan ID cards</Text>
-      <View style={styles.addButton}>
-        <TouchableOpacity
-          onPress={() => {
-            setModalVisible(true);
+export default class HomeScreen extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      modalVisible: false,
+      zIDInput: "",
+      nameInput: "",
+      inputReady: false,
+    };
+  }
+
+  render() {
+    return (
+      <View style={GlobalStyles.contentContainer}>
+        <Text>Hello, enable NFC to scan ID cards</Text>
+        <View style={styles.addButton}>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                modalVisible: true,
+              });
+            }}
+          >
+            <Icon size={45} focused={Colors.white} name="md-add" />
+          </TouchableOpacity>
+        </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setState({
+              modalVisible: false,
+            });
           }}
         >
-          <Icon size={45} focused={Colors.white} name="md-add" />
-        </TouchableOpacity>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalButton}>
+              {this.state.inputReady == true ? (
+                <TouchableOpacity onPress={submitInput()}>
+                  <Icon size={27} focused={Colors.grey} name="md-paper-plane" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => {
+                    this.setState({
+                      zIDInput: "",
+                      nameInput: "",
+                      inputReady: false,
+                      modalVisible: false,
+                    });
+                  }}
+                >
+                  <Icon size={27} focused={Colors.grey} name="md-trash" />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <View style={styles.inputLabel}>
+                <Text>zID</Text>
+              </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  onChangeText={(zID) => {
+                    this.setState({
+                      zIDInput: zID,
+                    });
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <View style={styles.inputLabel}>
+                <Text>Full Name</Text>
+              </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  onChangeText={(name) => {
+                    this.setState({
+                      nameInput: name,
+                    });
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalButton}>
-            {ready == true ? (
-              <TouchableOpacity onPress={submitInput()}>
-                <Icon size={27} focused={Colors.grey} name="md-paper-plane" />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={() => {
-                  setZID("");
-                  setName("");
-                  setReady(false);
-                  setModalVisible(false);
-                }}
-              >
-                <Icon size={27} focused={Colors.grey} name="md-trash" />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          <View style={styles.inputContainer}>
-            <View style={styles.inputLabel}>
-              <Text>zID</Text>
-            </View>
-            <View style={styles.inputContent}>
-              <TextInput
-                onChangeText={(zID) => {
-                  setZID(zID);
-                }}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputContainer}>
-            <View style={styles.inputLabel}>
-              <Text>Full Name</Text>
-            </View>
-            <View style={styles.inputContent}>
-              <TextInput
-                onChangeText={(name) => {
-                  setName(name);
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -112,7 +133,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     shadowColor: "black",
     elevation: 5,
-    paddingVertical: 40,
+    paddingBottom: 35,
+    paddingTop: 25,
   },
   modalButton: {
     height: 50,
