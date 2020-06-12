@@ -1,14 +1,24 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Modal } from "react-native";
-import NfcManager, { NfcTech } from "react-native-nfc-manager";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+  Platform,
+} from "react-native";
+import NfcManager, { ByteParser, NfcTech } from "react-native-nfc-manager";
+/* Note: `ByteParse` is an utility module to encode and decode 
+byte arrays used in Mifare Classic Technology (The one our IDs use)*/
 
 import Icon from "../components/Icon";
 import { GlobalStyles } from "../constants/GlobalStyle";
 import Colors from "../constants/Colors";
 import { TextInput } from "react-native-gesture-handler";
+import { isConfigurationAvailable } from "expo/build/AR";
 
 /* 
-TODO: Upgrade the form to formik and add error checking.
+TODO: Function for input checking
 */
 
 export default class HomeScreen extends React.Component {
@@ -19,13 +29,54 @@ export default class HomeScreen extends React.Component {
       zIDInput: "",
       nameInput: "",
       inputReady: false,
+
+      nfcEnabled: false,
     };
+  }
+
+  componentDidMount() {
+    const start = Platform.OS === "ios";
+    if (start == false) {
+      NfcManager.start()
+        .then(() => NfcManager.isEnabled())
+        .then(() => this.setState({ nfcEnabled: true }))
+        .catch((err) => {
+          console.warn(err);
+        });
+
+      this.nfcStartDetection();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.state.nfcEnabled == true) {
+      NfcManager.stop();
+    }
+  }
+
+  nfcStartDetection() {
+    const cleanUp = () => {
+      NfcManager.closeTechnology();
+      NfcManager.unregisterTagEvent();
+    };
+
+    const zID_sector = 10;
+    const read = () => {
+      NfcManager.mifareClassicReadSector(parseInt(zID_sector));
+    };
+  }
+
+  nfcStopDetection() {
+    if (this.state.nfcEnabled == true) {
+      NfcManager.cancelTechnologyRequest().catch((err) => console.warn(err));
+    }
   }
 
   render() {
     return (
       <View style={GlobalStyles.contentContainer}>
         <Text>Hello, enable NFC to scan ID cards</Text>
+        <Text>Note: NFC enabled: {this.state.nfcEnabled}</Text>
         <View style={styles.addButton}>
           <TouchableOpacity
             onPress={() => {
