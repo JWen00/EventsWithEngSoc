@@ -1,68 +1,55 @@
-import * as React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { SplashScreen } from 'expo';
-import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
+import {Video} from 'expo-av';
+import {Dimensions, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import Modal from 'expo-modal';
+import DeviceInfo from 'react-native-device-info';
 
-import BottomTabNavigator from './navigation/BottomTabNavigator';
-import useLinking from './navigation/useLinking';
+const {height, width} = Dimensions.get('window');
 
+export default class App extends React.Component {
 
-const Stack = createStackNavigator();
+    render() {
 
-export default function App(props) {
-  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
-  const [initialNavigationState, setInitialNavigationState] = React.useState();
-  const containerRef = React.useRef();
-  const { getInitialState } = useLinking(containerRef);
+        const innerComponent = <View
+            style={{height: height / 2, width: width / 2, justifyContent: 'center', alignItems: 'center'}}>
+            <Text>Hello world</Text>
+            <TouchableOpacity onPress={() => Modal.dismissModal()}><Text>close modal</Text></TouchableOpacity>
+        </View>
 
-  // Load any resources or data that we need prior to rendering the app
-  React.useEffect(() => {
-    async function loadResourcesAndDataAsync() {
-      try {
-        SplashScreen.preventAutoHide();
-
-        // Load our initial navigation state
-        setInitialNavigationState(await getInitialState());
-
-        // Load fonts
-        await Font.loadAsync({
-          ...Ionicons.font,
-          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-        });
-      } catch (e) {
-        console.warn(e);
-      } finally {
-        setLoadingComplete(true);
-        SplashScreen.hide();
-      }
+        return Modal.wrapIntoModal((
+            <View style={styles.container}>
+                <Text>{DeviceInfo.getBrand()}</Text>
+                <Video
+                    source={{uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'}}
+                    shouldPlay={true}
+                    resizeMode="cover"
+                    style={styles.videoPlayer}
+                />
+                <TouchableHighlight
+                    onPress={() => {
+                        Modal.showModal(innerComponent)
+                    }}
+                >
+                    <Text> Touch Here </Text>
+                </TouchableHighlight>
+            </View>
+        ), styles.modalStyle)
     }
-
-    loadResourcesAndDataAsync();
-  }, []);
-
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
-    return null;
-  } else {
-    return (
-      <View style={styles.container}>
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
-            <Stack.Screen name="Root" 
-                          component={BottomTabNavigator} 
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
-    );
-  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    videoPlayer: {
+        position: 'relative',
+        width: '100%',
+        aspectRatio: 3 / 2,
+    },
+    modalStyle: {
+        backgroundColor: 'rgba(1,1,56,0.3)',
+    }
 });

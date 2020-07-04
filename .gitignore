@@ -1,6 +1,9 @@
-.expo/
-.vscode/
-web-build/
-node_modules/
-yarn-error.log/ 
-babel.config.js/
+node_modules/**/*
+ios/Pods
+ios/build
+.idea
+*/.idea
+*/.gradle
+android/app/build
+android/local.properties/
+app.json
