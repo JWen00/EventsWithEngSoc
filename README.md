@@ -1,12 +1,12 @@
 # Nemesis
 
-Starting Template uses `expo init`
+> Starting Template uses `expo init`
 
 To start launching
 
 ```
-npm install
+expo install
 
-npm start
+expo start
 
 ```
