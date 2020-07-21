@@ -61,7 +61,6 @@ export default function App() {
 
   return (
     <View style={styles.contentContainer}>
-      <Text>HEWLENRLWKENRLWKENRLWEKNRLWKENRLWKENRWLKENLRKWENK</Text>
       {/* Open the camera when button has been pressed */}
       <View
         style={{
@@ -94,7 +93,7 @@ export default function App() {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            setCamera(true);
+            setCamera(!openCamera);
           }}
         >
           <Icon size={27} focused={Colors.grey} name="md-camera" />
@@ -168,7 +167,6 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     justifyContent: "space-between",
-    backgroundColor: Colors.navyBlue,
     position: "absolute",
     bottom: 0,
     right: 0,
@@ -184,10 +182,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOpacity: 1.0,
     elevation: 5,
-    margin: 20,
-    position: "absolute",
-    bottom: 0,
-    right: 0,
+    margin: 10,
   },
 
   modalContainer: {
