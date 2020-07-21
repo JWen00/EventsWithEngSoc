@@ -1,55 +1,31 @@
-import React from 'react';
-import {Video} from 'expo-av';
-import {Dimensions, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
-import Modal from 'expo-modal';
-import DeviceInfo from 'react-native-device-info';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-const {height, width} = Dimensions.get('window');
+import BottomTabNavigator from "./navigation/BottomTabNavigator";
+import useLinking from "./navigation/UseLinking";
 
-export default class App extends React.Component {
+const Stack = createStackNavigator();
 
-    render() {
+export default function App(props) {
+  const containerRef = React.useRef();
+  const { getInitialState } = useLinking(containerRef);
 
-        const innerComponent = <View
-            style={{height: height / 2, width: width / 2, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>Hello world</Text>
-            <TouchableOpacity onPress={() => Modal.dismissModal()}><Text>close modal</Text></TouchableOpacity>
-        </View>
-
-        return Modal.wrapIntoModal((
-            <View style={styles.container}>
-                <Text>{DeviceInfo.getBrand()}</Text>
-                <Video
-                    source={{uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'}}
-                    shouldPlay={true}
-                    resizeMode="cover"
-                    style={styles.videoPlayer}
-                />
-                <TouchableHighlight
-                    onPress={() => {
-                        Modal.showModal(innerComponent)
-                    }}
-                >
-                    <Text> Touch Here </Text>
-                </TouchableHighlight>
-            </View>
-        ), styles.modalStyle)
-    }
+  return (
+    <View style={styles.container}>
+      <NavigationContainer ref={containerRef}>
+        <Stack.Navigator>
+          <Stack.Screen name="Root" component={BottomTabNavigator} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    videoPlayer: {
-        position: 'relative',
-        width: '100%',
-        aspectRatio: 3 / 2,
-    },
-    modalStyle: {
-        backgroundColor: 'rgba(1,1,56,0.3)',
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
 });
