@@ -1,93 +1,143 @@
-import React, { Component } from "react";
-import { Text, View, StyleSheet, TextInput, Keyboard } from "react-native";
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+import React, { Component, useState } from "react";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  RefreshControl,
+} from "react-native";
+import {
+  TouchableOpacity,
+  ScrollView,
+  Directions,
+} from "react-native-gesture-handler";
+import { Chip } from "react-native-paper";
 
 import { GlobalStyles } from "../constants/GlobalStyles";
-import AttendeeData from "../testData";
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 
 function Card(props) {
+  const [isExpanded, setExpanded] = useState(false);
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.cardContainer}
+      onPress={() => setExpanded(!isExpanded)}
+    >
       <View style={styles.cardContent}>
+        {/* Show general details */}
         <View style={styles.cardDetail}>
-          <Text style={GlobalStyles.titleText}>{props.zID}</Text>
-          <Text style={GlobalStyles.paragraph}>{props.name}</Text>
+          {props.zID != null && (
+            <Text style={GlobalStyles.titleText}>z{props.zID}</Text>
+          )}
+
+          <Text style={GlobalStyles.paragraph}>
+            {props.fname} {props.last_name}
+          </Text>
         </View>
+
+        {/* Show paid/checked-in */}
         <View style={styles.cardIcon}>
-          {props.paid == "Yes" ? (
+          {props.paid == true ? (
             <Icon size={23} focused={Colors.successGreen} name="md-card" />
           ) : (
             <Icon size={23} name="md-card" />
           )}
-          {props.registered == "Yes" ? (
+          {props.hasCheckedIn == true ? (
             <Icon size={23} focused={Colors.successGreen} name="md-done-all" />
           ) : (
             <Icon size={23} name="md-done-all" />
           )}
         </View>
       </View>
-    </View>
+      <View style={styles.cardContent}>
+        {/* When expanded, show details */}
+        {isExpanded && (
+          <View>{props.hasCheckedIn && <Text>{props.checkInTime}</Text>}</View>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 }
 
-const attendees = AttendeeData;
 export default class AttendeeScreen extends React.Component {
   constructor() {
     super();
     this.state = {
       query: "Search",
       isFocused: false,
+      attendeeData: [],
+      attendeeTemp: [],
+      filterCheckedIn: false,
+      filterPaid: false,
+      refreshing: false,
     };
   }
 
-  handleOnCardPress() {
-    //TODO
+  // Grab the data
+  componentDidMount() {
+    this.refreshData();
+  }
+
+  refreshData() {
+    fetch("https://nemesis2.dev.unswengsoc.com/attendees")
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          attendeeData: responseJson,
+          attendeeTemp: responseJson,
+          refreshing: false,
+        });
+      })
+      .catch((error) => console.log(error));
   }
 
   renderSearchBar() {
     return (
-      <View style={styles.searchBarContainer}>
+      <View style={styles.searchBarContent}>
+        {/* Search Icon */}
         <View style={styles.searchBarContent}>
-          <View style={styles.searchBarContent}>
-            <Icon size={30} name="md-search" />
-          </View>
+          <Icon size={30} name="md-search" />
+        </View>
 
-          <ScrollView style={styles.searchBar}>
-            <TextInput
-              onChangeText={(query) => {
-                this.setState({
-                  query: query,
-                });
-              }}
-              onFocus={() =>
-                this.setState({
-                  query: "",
-                  isFocused: true,
-                })
-              }
-              onEndEditing={() =>
-                this.setState({
-                  isFocused: false,
-                })
-              }
-              value={this.state.query}
-            />
-          </ScrollView>
-          <TouchableOpacity
-            style={styles.searchBarContent}
-            onPress={() => {
+        {/* Search Functionality  */}
+        <ScrollView style={styles.searchBar}>
+          <TextInput
+            onChangeText={(query) => {
+              this.setState({
+                query: query,
+              });
+            }}
+            onFocus={() =>
               this.setState({
                 query: "",
+                isFocused: true,
+              })
+            }
+            onEndEditing={() =>
+              this.setState({
                 isFocused: false,
-              });
-              Keyboard.dismiss();
-            }}
-          >
-            <Icon size={27} name="md-close" />
-          </TouchableOpacity>
-        </View>
+              })
+            }
+            value={this.state.query}
+          />
+        </ScrollView>
+
+        {/* X Icon: Deletes input */}
+        <TouchableOpacity
+          style={styles.searchBarContent}
+          onPress={() => {
+            this.setState({
+              query: "",
+              isFocused: false,
+            });
+            Keyboard.dismiss();
+          }}
+        >
+          <Icon size={27} name="md-close" />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -96,12 +146,13 @@ export default class AttendeeScreen extends React.Component {
     const query = this.state.query.toLowerCase().trim();
     return (
       <View style={styles.attendeeList}>
-        {attendees
-          .filter((attendee) => attendee.zID.includes(query))
+        {this.state.attendeeTemp
+          .filter((attendee) => attendee.zid.includes(query))
           .map((filteredAttendee) => (
             <Card
               zID={filteredAttendee.zID}
-              name={filteredAttendee.name}
+              fname={filteredAttendee.first_name}
+              lname={filteredAttendee.last_name}
               paid={filteredAttendee.paid}
               registered={filteredAttendee.registered}
             />
@@ -112,26 +163,77 @@ export default class AttendeeScreen extends React.Component {
 
   renderEntireList() {
     return (
-      <ScrollView style={styles.attendeeList}>
-        {attendees.map((attendee, index) => (
+      <View style={styles.attendeeList}>
+        {this.state.attendeeTemp.map((attendee, index) => (
           <Card
-            zID={attendee.zID}
+            zID={attendee.zid}
             name={attendee.name}
             paid={attendee.paid}
-            registered={attendee.registered}
+            hasCheckedIn={attendee.checked_in}
+            checkInTime={attendee.checked_in_time}
           />
         ))}
-      </ScrollView>
+      </View>
+    );
+  }
+
+  renderSwitches() {
+    return (
+      <View style={styles.filterContainer}>
+        <Chip
+          selected={this.state.filterPaid}
+          selectedColor={Colors.navyBlue}
+          style={styles.filterContent}
+          onPress={() => {
+            this.setState({
+              filterPaid: !this.state.filterPaid,
+              attendeeTemp: this.state.attendeeData.filter((attendee) => {
+                console.log(attendee);
+                attendee.paid == this.state.filterPaid &&
+                  attendee.checked_in == this.state.filterCheckedIn;
+              }),
+            });
+          }}
+        >
+          Paid
+        </Chip>
+        <Chip
+          selected={this.state.filterCheckedIn}
+          selectedColor={Colors.navyBlue}
+          style={styles.filterContent}
+          onPress={() => {
+            this.setState({
+              filterCheckedIn: !this.state.filterCheckedIn,
+              attendeeTemp: this.state.attendeeData.filter((attendee) => {
+                attendee.paid == this.state.filterPaid &&
+                  attendee.checked_in == this.state.filterCheckedIn;
+              }),
+            });
+          }}
+        >
+          Checked-In
+        </Chip>
+      </View>
     );
   }
 
   render() {
     return (
       <View style={GlobalStyles.contentContainer}>
-        {this.renderSearchBar()}
-        {this.state.isFocused
-          ? this.renderSearchResult()
-          : this.renderEntireList()}
+        <View style={styles.searchBarContainer}>{this.renderSearchBar()}</View>
+        {this.renderSwitches()}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshData()}
+            />
+          }
+        >
+          {this.state.isFocused
+            ? this.renderSearchResult()
+            : this.renderEntireList()}
+        </ScrollView>
       </View>
     );
   }
@@ -155,16 +257,28 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.navyBlue,
   },
 
+  filterContainer: {
+    height: 50,
+    padding: 5,
+    flexDirection: "row",
+  },
+
+  filterContent: {
+    padding: 2,
+    margin: 2,
+    width: 130,
+    justifyContent: "center",
+  },
+
   searchBar: {
     marginVertical: 5,
     marginHorizontal: 5,
     color: Colors.grey,
   },
   attendeeList: {
-    flex: 1,
     padding: 5,
   },
-  card: {
+  cardContainer: {
     elevation: 2,
     backgroundColor: "#fff",
     shadowOffset: { width: 1, height: 1 },
@@ -174,6 +288,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     marginVertical: 6,
     borderRadius: 10,
+    flexDirection: "column",
   },
   cardContent: {
     marginHorizontal: 15,

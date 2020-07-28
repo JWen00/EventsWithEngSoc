@@ -5,6 +5,8 @@ export const GlobalStyles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     margin: 20,
+    flexDirection: "column",
+    // justifyContent: "start",
   },
   titleText: {
     fontSize: 16,
@@ -15,6 +17,6 @@ export const GlobalStyles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 5,
     lineHeight: 20,
-    color: Colors.grey,
+    color: Colors.primeRed,
   },
 });
