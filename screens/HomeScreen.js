@@ -10,7 +10,13 @@ import {
 import React, { useState, useEffect } from "react";
 import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
+import SignInRow from "../components/SignInRow";
+import { Entypo } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { GlobalStyles } from "../constants/GlobalStyles";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 export default function HomeScreen() {
   const [openCamera, setCamera] = useState(false);
@@ -34,7 +40,7 @@ export default function HomeScreen() {
         });
       }}
     >
-      <Icon size={45} focused={Colors.white} name="md-add" />
+      <Icon size={35} focused={Colors.white} name="md-add" />
     </TouchableOpacity>
   );
 
@@ -64,6 +70,49 @@ export default function HomeScreen() {
   return (
     <View style={styles.contentContainer}>
       {/* Open the camera when button has been pressed */}
+      <View style={styles.card}>
+        <View style={styles.miniStat}>
+          <MaterialCommunityIcons
+            name="account-check"
+            size={50}
+            color="black"
+          />
+          <View style={styles.miniStatText}>
+            <Text style={GlobalStyles.titleText}>Sign ins</Text>
+            <Text>93</Text>
+          </View>
+        </View>
+        <View style={styles.progressMeter}>
+          <AnimatedCircularProgress
+            size={75}
+            width={10}
+            fill={77}
+            tintColor="#22b34e"
+            onAnimationComplete={() => console.log("onAnimationComplete")}
+            backgroundColor="#cc2d2d"
+          >
+            {(fill) => <Text style={GlobalStyles.titleText}>{fill}%</Text>}
+          </AnimatedCircularProgress>
+          <View></View>
+        </View>
+        <View style={styles.miniStat}>
+          <View style={styles.miniStatText}>
+            <Text style={GlobalStyles.titleText}>Tickets</Text>
+            <Text>121</Text>
+          </View>
+          <Entypo name="ticket" size={50} color="black" />
+        </View>
+      </View>
+      <View style={styles.signIns}>
+        <Text style={styles.signInText}>Recent Sign ins</Text>
+        <View style={styles.rowContainer}>
+          <SignInRow />
+          <SignInRow />
+          <SignInRow />
+          <SignInRow />
+          <SignInRow />
+        </View>
+      </View>
       <View
         style={{
           flex: 1,
@@ -78,12 +127,12 @@ export default function HomeScreen() {
               setPopUp(true);
               setzID(data);
             }}
-            style={StyleSheet.absoluteFillObject}
+            style={styles.cameraStyle}
           />
         )}
       </View>
 
-      <View style={styles.buttonContainer}>
+      <View style={styles.buttonContainerLeft}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
@@ -92,6 +141,8 @@ export default function HomeScreen() {
         >
           <Icon size={27} focused={Colors.grey} name="md-add" />
         </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainerRight}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
@@ -190,12 +241,96 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  cameraStyle: {
+    ...StyleSheet.absoluteFill,
+  },
 
-  buttonContainer: {
+  buttonContainerLeft: {
+    justifyContent: "space-between",
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+  },
+  buttonContainerRight: {
     justifyContent: "space-between",
     position: "absolute",
     bottom: 10,
     right: 10,
+  },
+
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    height: 100,
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight: 10,
+
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+
+  miniStat: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  miniStatText: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 5,
+  },
+  signIns: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    height: 420,
+    margin: 10,
+    // display: "flex",
+    // flexDirection: "row",
+    // alignItems: "center",
+    // justifyContent: "space-evenly",
+  },
+
+  signInText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    left: 15,
+    top: 15,
+    marginBottom: 40,
+  },
+
+  rowContainer: {
+    display: "flex",
+  },
+  signInRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+
+  signInIcon: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  personIcon: {
+    //marginBottom: 10,
+    bottom: 3,
+  },
+  personDetails: {
+    marginLeft: 10,
+  },
+  timeStamp: {
+    marginBottom: 20,
   },
 
   button: {
@@ -224,6 +359,8 @@ const styles = StyleSheet.create({
     height: 300,
     paddingBottom: 35,
     paddingTop: 25,
+    borderWidth: 2,
+    borderColor: Colors.oceanBlue,
   },
   modalButton: {
     height: 50,
