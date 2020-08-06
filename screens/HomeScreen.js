@@ -70,49 +70,54 @@ export default function HomeScreen() {
   return (
     <View style={styles.contentContainer}>
       {/* Open the camera when button has been pressed */}
-      <View style={styles.card}>
-        <View style={styles.miniStat}>
-          <MaterialCommunityIcons
-            name="account-check"
-            size={50}
-            color="black"
-          />
-          <View style={styles.miniStatText}>
-            <Text style={GlobalStyles.titleText}>Sign ins</Text>
-            <Text>93</Text>
+      {!openCamera && (
+        <>
+          <View style={styles.card}>
+            <View style={styles.miniStat}>
+              <MaterialCommunityIcons
+                name="account-check"
+                size={50}
+                color="black"
+              />
+              <View style={styles.miniStatText}>
+                <Text style={GlobalStyles.titleText}>Sign ins</Text>
+                <Text>93</Text>
+              </View>
+            </View>
+            <View style={styles.progressMeter}>
+              <AnimatedCircularProgress
+                size={75}
+                width={10}
+                fill={77}
+                tintColor="#22b34e"
+                onAnimationComplete={() => console.log("onAnimationComplete")}
+                backgroundColor="#cc2d2d"
+              >
+                {(fill) => <Text style={GlobalStyles.titleText}>{fill}%</Text>}
+              </AnimatedCircularProgress>
+              <View></View>
+            </View>
+            <View style={styles.miniStat}>
+              <View style={styles.miniStatText}>
+                <Text style={GlobalStyles.titleText}>Tickets</Text>
+                <Text>121</Text>
+              </View>
+              <Entypo name="ticket" size={50} color="black" />
+            </View>
           </View>
-        </View>
-        <View style={styles.progressMeter}>
-          <AnimatedCircularProgress
-            size={75}
-            width={10}
-            fill={77}
-            tintColor="#22b34e"
-            onAnimationComplete={() => console.log("onAnimationComplete")}
-            backgroundColor="#cc2d2d"
-          >
-            {(fill) => <Text style={GlobalStyles.titleText}>{fill}%</Text>}
-          </AnimatedCircularProgress>
-          <View></View>
-        </View>
-        <View style={styles.miniStat}>
-          <View style={styles.miniStatText}>
-            <Text style={GlobalStyles.titleText}>Tickets</Text>
-            <Text>121</Text>
+          <View style={styles.signIns}>
+            <Text style={styles.signInText}>Recent Sign ins</Text>
+            <View style={styles.rowContainer}>
+              <SignInRow />
+              <SignInRow />
+              <SignInRow />
+              <SignInRow />
+              <SignInRow />
+            </View>
           </View>
-          <Entypo name="ticket" size={50} color="black" />
-        </View>
-      </View>
-      <View style={styles.signIns}>
-        <Text style={styles.signInText}>Recent Sign ins</Text>
-        <View style={styles.rowContainer}>
-          <SignInRow />
-          <SignInRow />
-          <SignInRow />
-          <SignInRow />
-          <SignInRow />
-        </View>
-      </View>
+        </>
+      )}
+
       <View
         style={{
           flex: 1,
