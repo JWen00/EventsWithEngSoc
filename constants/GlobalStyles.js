@@ -6,7 +6,6 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     margin: 20,
     flexDirection: "column",
-    // justifyContent: "start",
   },
   titleText: {
     fontSize: 16,

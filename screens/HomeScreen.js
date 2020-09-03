@@ -6,110 +6,142 @@ import {
   Modal,
   CheckBox,
   TextInput,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import { GlobalStyles } from "../constants/GlobalStyles";
+import { ScrollView } from "react-native-gesture-handler";
+
 import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
-import { BarCodeScanner } from "expo-barcode-scanner";
+import EventSummaryCard from "../components/EventSummaryCard";
+import UserCard from "../components/UserCard";
 
 export default function HomeScreen() {
   const [openCamera, setCamera] = useState(false);
-  const [openPopUp, setPopUp] = useState(false);
+  const [openModal, setModal] = useState(false);
 
   const [name, setName] = useState("");
   const [zID, setzID] = useState("");
   const [isArcMem, setIsArmMem] = useState(false);
 
+  const [internalError, setError] = useState(false);
+  const [isRefreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-    })();
   }, []);
 
-  const openModalButton = () => (
-    <TouchableOpacity
-      onPress={() => {
-        this.setState({
-          modalVisible: true,
-        });
-      }}
-    >
-      <Icon size={45} focused={Colors.white} name="md-add" />
-    </TouchableOpacity>
-  );
+  // const modalSubmitForm = () => {
+  //   fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
+  //     zid: zID,
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (internalError) {
+  //         setError(false);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setError(true);
+  //     });
 
-  const modalSubmitForm = () => {
-    alert("Submitting data!");
-    setPopUp(false);
-    setzID("");
-    setName("");
-    setIsArmMem(false);
-    // TEMPORARY! TODO
-  };
-
-  // const modalSubmitForm = async () => {
-  //   return (
-  //     fetch("localhost:5000/api/v1/submit"),
-  //     {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         name: name,
-  //         zID: zID,
-  //         isArcMem: isArcMem,
-  //       }),
-  //     }
-  //   );
+  //   setModal(false);
+  //   setzID("");
+  //   setName("");
+  //   setIsArmMem(false);
   // };
 
-  return (
-    <View style={styles.contentContainer}>
-      {/* Open the camera when button has been pressed */}
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
-      >
-        {openCamera && (
-          <BarCodeScanner
-            onBarCodeScanned={({ type, data }) => {
-              setCamera(false);
-              setPopUp(true);
-              setzID(data);
-            }}
-            style={StyleSheet.absoluteFillObject}
-          />
-        )}
-      </View>
+  // const wait = (timeout) => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(resolve, timeout);
+  //   });
+  // };
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setPopUp(!openPopUp);
+  const [recentSignIns, setSignIns] = useState([]);
+  const [statPercentage, setStatPercentage] = useState(75);
+  // const refreshData = React.useCallback(() => { 
+  //   setRefreshing(true);
+  //   fetch("https://nemesis2.dev.unswengsoc.com/attendees", {
+  //     num_specified: 5,
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (internalError) {
+  //         setError(false);
+  //       }
+  //       setSignIns(response);
+  //     })
+  //     .catch((err) => {
+  //       setError(true);
+  //     });
+  //     fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       if (internalError) {
+  //         setError(false);
+  //       }
+  //       setStatPercentage(data.signedinpercentage);
+  //     })
+  //     .catch((err) => {
+  //       setError(true);
+  //     });
+
+  //   wait(1500).then(() => setRefreshing(false));
+  // }, []);
+
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={refreshData} />
+      }
+    >
+      {/* View when camera is open */}
+      {openCamera && (
+        <BarCodeScanner
+          onBarCodeScanned={({ type, data }) => {
+            setCamera(false);
+            setModal(true);
+            setzID(data);
           }}
-        >
-          <Icon size={27} focused={Colors.grey} name="md-add" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setCamera(!openCamera);
-          }}
-        >
-          <Icon size={27} focused={Colors.grey} name="md-camera" />
-        </TouchableOpacity>
-      </View>
+          style={styles.cameraStyle}
+        />
+      )}
+
+      {/* View when camera is NOT open*/}
+      {!openCamera && (
+        <View>
+         {/* Cards showing recent sign-ins */}
+           <Text style={styles.headerText}>Recent Sign ins</Text>
+           {people.map((person) => { 
+             <UserCard data={person} />; 
+           })}
+              <EventSummaryCard percentage={statPercentage} /> 
+
+          {/* Card to add a new sign-in */}
+          <TouchableOpacity
+            style={styles.addSignInContainer}
+            onPress={() => {
+              setModal(true);
+            }}
+          >
+            <Icon size={35} focused={Colors.darkGrey} name="md-add" />
+            <Text style={styles.addInputText}>Add Manually</Text>
+          </TouchableOpacity>
+         </View>
+        )}
+
 
       {/* Open Modal when button has been pressed */}
-      {openPopUp && (
+      {openModal && (
         <Modal
           animationType="slide"
           transparent={true}
-          visible={openPopUp}
+          visible={openModal}
           onRequestClose={() => {
-            setPopUp(false);
+            setModal(false);
             setzID("");
             setName("");
             setIsArmMem(false);
@@ -120,19 +152,19 @@ export default function HomeScreen() {
               {zID == "" ? (
                 <TouchableOpacity
                   onPress={() => {
-                    setPopUp(false);
+                    setModal(false);
                     setzID("");
                     setName("");
                     setIsArmMem(false);
                   }}
                 >
-                  <Icon size={35} focused={Colors.lightGrey} name="md-trash" />
+                  <Icon size={35} focused={Colors.darkGrey} name="md-trash" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={() => {
-                    alert("Got the data!");
-                    setPopUp(false);
+                    modalSubmitForm();
+                    setModal(false);
                     setzID("");
                     setName("");
                     setIsArmMem(false);
@@ -181,34 +213,72 @@ export default function HomeScreen() {
           </View>
         </Modal>
       )}
-    </View>
-  );
+
+      {/* Camera Button (Always in view) */}
+      <View style={styles.cameraButton}>
+        <TouchableOpacity
+          onPress={() => {
+            setCamera(!openCamera);
+          }}
+        >
+          <Icon size={27} focused={Colors.grey} name="md-camera" />
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  baseContainer: {
     flex: 1,
-    justifyContent: "center",
+    margin: 20,
+  },
+  cameraStyle: {
+    ...StyleSheet.absoluteFill,
   },
 
-  buttonContainer: {
+  cameraButton: {
     justifyContent: "space-between",
     position: "absolute",
-    bottom: 10,
-    right: 10,
-  },
-
-  button: {
+    bottom: 20,
+    right: 15,
     width: 60,
     height: 60,
     borderRadius: 100 / 2,
-    backgroundColor: Colors.oceanBlue, // Ocean Blue
+    backgroundColor: Colors.oceanBlue,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",
     shadowOpacity: 1.0,
     elevation: 5,
-    margin: 10,
+  },
+
+  addSignInContainer: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    margin: 5,
+    height: 80,
+    display: "flex",
+    alignItems: "center",
+    padding: 5,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+
+  addInputText: {
+    fontWeight: "bold",
+    color: Colors.darkGrey,
+    fontSize: 20,
+    margin: 7,
+  },
+
+  headerText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: Colors.darkGrey,
+    left: 15,
+    top: 15,
+    marginBottom: 40,
   },
 
   modalContainer: {
@@ -216,7 +286,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 20,
     top: 220,
-    // padding: 5,
     backgroundColor: Colors.white,
     borderRadius: 20,
     shadowColor: "black",
@@ -224,18 +293,10 @@ const styles = StyleSheet.create({
     height: 300,
     paddingBottom: 35,
     paddingTop: 25,
+    borderWidth: 2,
+    borderColor: Colors.oceanBlue,
   },
-  modalButton: {
-    height: 50,
-    width: 50,
-    borderRadius: 8,
-    borderColor: Colors.lightGrey,
-    borderWidth: 1,
-    // backgroundColor: Colors.primeRed,
-    justifyContent: "center",
-    alignItems: "center",
-    margin: 10,
-  },
+
   inputLabel: {
     padding: 5,
     flexDirection: "row",
@@ -249,8 +310,6 @@ const styles = StyleSheet.create({
   },
 
   inputContent: {
-    // textAlignVertical: "center",
-    // width: 165,
     marginBottom: 5,
     padding: 5,
     borderWidth: 1,

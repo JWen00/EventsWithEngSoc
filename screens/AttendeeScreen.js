@@ -1,6 +1,5 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import {
-  Text,
   View,
   StyleSheet,
   TextInput,
@@ -17,50 +16,7 @@ import { Chip } from "react-native-paper";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
-import { withSafeAreaInsets } from "react-native-safe-area-context";
-
-function Card(props) {
-  const [isExpanded, setExpanded] = useState(false);
-  return (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={() => setExpanded(!isExpanded)}
-    >
-      <View style={styles.cardContent}>
-        {/* Show general details */}
-        <View style={styles.cardDetail}>
-          {props.zID != null && (
-            <Text style={GlobalStyles.titleText}>z{props.zID}</Text>
-          )}
-
-          <Text style={GlobalStyles.paragraph}>
-            {props.fname} {props.last_name}
-          </Text>
-        </View>
-
-        {/* Show paid/checked-in */}
-        <View style={styles.cardIcon}>
-          {props.paid == true ? (
-            <Icon size={23} focused={Colors.successGreen} name="md-card" />
-          ) : (
-            <Icon size={23} name="md-card" />
-          )}
-          {props.hasCheckedIn == true ? (
-            <Icon size={23} focused={Colors.successGreen} name="md-done-all" />
-          ) : (
-            <Icon size={23} name="md-done-all" />
-          )}
-        </View>
-      </View>
-      <View style={styles.cardContent}>
-        {/* When expanded, show details */}
-        {isExpanded && (
-          <View>{props.hasCheckedIn && <Text>{props.checkInTime}</Text>}</View>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-}
+import UserCard from "../components/UserCard";
 
 export default class AttendeeScreen extends React.Component {
   constructor() {
@@ -148,14 +104,8 @@ export default class AttendeeScreen extends React.Component {
       <View style={styles.attendeeList}>
         {this.state.attendeeTemp
           .filter((attendee) => attendee.zid.includes(query))
-          .map((filteredAttendee) => (
-            <Card
-              zID={filteredAttendee.zID}
-              fname={filteredAttendee.first_name}
-              lname={filteredAttendee.last_name}
-              paid={filteredAttendee.paid}
-              registered={filteredAttendee.registered}
-            />
+          .map((f_attendee) => (
+            <UserCard data={f_attendee} />
           ))}
       </View>
     );
@@ -165,13 +115,7 @@ export default class AttendeeScreen extends React.Component {
     return (
       <View style={styles.attendeeList}>
         {this.state.attendeeTemp.map((attendee, index) => (
-          <Card
-            zID={attendee.zid}
-            name={attendee.name}
-            paid={attendee.paid}
-            hasCheckedIn={attendee.checked_in}
-            checkInTime={attendee.checked_in_time}
-          />
+          <UserCard data={attendee} />
         ))}
       </View>
     );
@@ -277,31 +221,5 @@ const styles = StyleSheet.create({
   },
   attendeeList: {
     padding: 5,
-  },
-  cardContainer: {
-    elevation: 2,
-    backgroundColor: "#fff",
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: "#333",
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    marginHorizontal: 4,
-    marginVertical: 6,
-    borderRadius: 10,
-    flexDirection: "column",
-  },
-  cardContent: {
-    marginHorizontal: 15,
-    marginVertical: 8,
-    marginRight: 10,
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  cardIcon: {
-    flexDirection: "row",
-    marginHorizontal: 5,
-    marginVertical: 4,
-    marginRight: 2,
   },
 });

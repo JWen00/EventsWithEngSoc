@@ -4,16 +4,24 @@ export default {
   errorBackground: "red",
   errorText: "#fff",
   warningBackground: "#EAEB5E",
-  warningText: "#666804",
-  noticeText: "#fff",
+
+  // EngSoc Colors
   navyBlue: "#071526",
   oceanBlue: "#1B324F",
   primeRed: "#AB0A26",
   dullRed: "#7a091c",
   warmYellow: "#FFA626",
+
+  // Text Colors
   white: "#fff",
-  successGreen: "#35AC5E",
+  darkGrey: "#565656",
   grey: "#8c8c8c",
   lightGrey: "#d4d4d4",
   veryLightGrey: "#edf0ee",
+  warningText: "#666804",
+  noticeText: "#fff",
+
+  // Color with meaning
+  successGreen: "#35AC5E",
+  dangerRed: "#cc2d2d",
 };
