@@ -30,74 +30,85 @@ export default function HomeScreen() {
   const [isRefreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    (async () => {
+    async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
-  }, []);
+    };
+  });
 
-  // const modalSubmitForm = () => {
-  //   fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
-  //     zid: zID,
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       if (internalError) {
-  //         setError(false);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setError(true);
-  //     });
+  const modalSubmitForm = () => {
+    fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
+      zid: zID,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (internalError) {
+          setError(false);
+        }
+      })
+      .catch((error) => setError(true));
 
-  //   setModal(false);
-  //   setzID("");
-  //   setName("");
-  //   setIsArmMem(false);
-  // };
+    setModal(false);
+    setzID("");
+    setName("");
+    setIsArmMem(false);
+  };
 
-  // const wait = (timeout) => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(resolve, timeout);
-  //   });
-  // };
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
 
   const [recentSignIns, setSignIns] = useState([]);
   const [statPercentage, setStatPercentage] = useState(75);
-  // const refreshData = React.useCallback(() => { 
-  //   setRefreshing(true);
-  //   fetch("https://nemesis2.dev.unswengsoc.com/attendees", {
-  //     num_specified: 5,
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       if (internalError) {
-  //         setError(false);
-  //       }
-  //       setSignIns(response);
-  //     })
-  //     .catch((err) => {
-  //       setError(true);
-  //     });
-  //     fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       if (internalError) {
-  //         setError(false);
-  //       }
-  //       setStatPercentage(data.signedinpercentage);
-  //     })
-  //     .catch((err) => {
-  //       setError(true);
-  //     });
+  const refreshData = React.useCallback(() => {
+    console.log("Refreshing for home screen");
+    setRefreshing(true);
+    fetch("https://nemesis2.dev.unswengsoc.com/attendees", {
+      num_specified: 5,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (internalError) {
+          setError(false);
+        }
+        console.log(data);
+        setSignIns(data);
+      })
+      .catch((error) => setError(true));
 
-  //   wait(1500).then(() => setRefreshing(false));
-  // }, []);
+    fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
+      .then((res) => res.json())
+      .then((data) => {
+        if (internalError) {
+          setError(false);
+        }
+        console.log("got data");
+        setStatPercentage(data.signedinpercentage * 100);
+      })
+      .catch((error) => setError(true));
+
+    wait(1500).then(() => setRefreshing(false));
+  }, []);
 
   return (
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={refreshData} />
       }
+      style={styles.baseContainer}
     >
+      {/* Camera Button (Always in view) */}
+      <View style={styles.cameraButton}>
+        <TouchableOpacity
+          onPress={() => {
+            setCamera(!openCamera);
+          }}
+        >
+          <Icon size={27} focused={Colors.white} name="md-camera" />
+        </TouchableOpacity>
+      </View>
+      {internalError ? <Text>Internal Server Error!</Text> : <View></View>}
       {/* View when camera is open */}
       {openCamera && (
         <BarCodeScanner
@@ -113,12 +124,20 @@ export default function HomeScreen() {
       {/* View when camera is NOT open*/}
       {!openCamera && (
         <View>
-         {/* Cards showing recent sign-ins */}
-           <Text style={styles.headerText}>Recent Sign ins</Text>
-           {people.map((person) => { 
-             <UserCard data={person} />; 
-           })}
-              <EventSummaryCard percentage={statPercentage} /> 
+          {/* Cards showing recent sign-ins */}
+          <Text style={styles.headerText}>Recent Sign ins</Text>
+          {recentSignIns.map((person) => (
+            <UserCard
+              fname={person.first_name}
+              lname={person.last_name}
+              zid={person.zid}
+              checked_in={person.checked_in}
+              paid={person.paid}
+              time={person.checked_in_time}
+              info={person.information}
+            />
+          ))}
+          <EventSummaryCard percentage={statPercentage} />
 
           {/* Card to add a new sign-in */}
           <TouchableOpacity
@@ -130,9 +149,8 @@ export default function HomeScreen() {
             <Icon size={35} focused={Colors.darkGrey} name="md-add" />
             <Text style={styles.addInputText}>Add Manually</Text>
           </TouchableOpacity>
-         </View>
-        )}
-
+        </View>
+      )}
 
       {/* Open Modal when button has been pressed */}
       {openModal && (
@@ -172,66 +190,53 @@ export default function HomeScreen() {
                 >
                   <Icon
                     size={35}
-                    focused={Colors.lightGrey}
+                    focused={Colors.darkGrey}
                     name="md-paper-plane"
                   />
                 </TouchableOpacity>
               )}
             </View>
             <View style={styles.inputContainer}>
-              <View>
-                <View style={styles.inputContent}>
-                  <TextInput
-                    placeholder="Full Name"
-                    value={name}
-                    onChangeText={(n) => {
-                      setName(n);
-                    }}
-                  />
-                </View>
-                <View style={styles.inputContent}>
-                  <TextInput
-                    placeholder="zID"
-                    value={zID}
-                    onChangeText={(id) => {
-                      setzID(id);
-                    }}
-                  />
-                </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  placeholder="Full Name"
+                  value={name}
+                  onChangeText={(n) => {
+                    setName(n);
+                  }}
+                />
+              </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  placeholder="zID"
+                  value={zID}
+                  onChangeText={(id) => {
+                    setzID(id);
+                  }}
+                />
+              </View>
 
-                <View style={styles.inputLabel}>
-                  <Text>Are you an arc-member?</Text>
-                  <CheckBox
-                    value={isArcMem}
-                    onValueChange={(isChecked) => {
-                      setIsArmMem(isChecked);
-                    }}
-                  ></CheckBox>
-                </View>
+              <View style={styles.inputLabel}>
+                <Text>Are you an arc-member?</Text>
+                <CheckBox
+                  value={isArcMem}
+                  onValueChange={(isChecked) => {
+                    setIsArmMem(isChecked);
+                  }}
+                ></CheckBox>
               </View>
             </View>
           </View>
         </Modal>
       )}
-
-      {/* Camera Button (Always in view) */}
-      <View style={styles.cameraButton}>
-        <TouchableOpacity
-          onPress={() => {
-            setCamera(!openCamera);
-          }}
-        >
-          <Icon size={27} focused={Colors.grey} name="md-camera" />
-        </TouchableOpacity>
-      </View>
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,
-    margin: 20,
+    margin: 10,
   },
   cameraStyle: {
     ...StyleSheet.absoluteFill,
@@ -297,6 +302,17 @@ const styles = StyleSheet.create({
     borderColor: Colors.oceanBlue,
   },
 
+  modalButton: {
+    borderWidth: 1,
+    borderColor: Colors.darkGrey,
+    borderRadius: 15,
+    height: 60,
+    width: 60,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   inputLabel: {
     padding: 5,
     flexDirection: "row",
@@ -313,7 +329,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     padding: 5,
     borderWidth: 1,
-    borderColor: Colors.veryLightGrey,
+    borderColor: Colors.lightGrey,
     borderRadius: 5,
   },
 });

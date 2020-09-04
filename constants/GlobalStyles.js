@@ -16,6 +16,6 @@ export const GlobalStyles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 5,
     lineHeight: 20,
-    color: Colors.primeRed,
+    color: Colors.darkGrey,
   },
 });
