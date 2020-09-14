@@ -3,7 +3,6 @@ import { View, StyleSheet, TextInput, Keyboard } from "react-native";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { Chip } from "react-native-paper";
 
-import { GlobalStyles } from "../constants/GlobalStyles";
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
 import UserCard from "../components/UserCard";
