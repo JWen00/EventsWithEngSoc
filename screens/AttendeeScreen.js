@@ -25,9 +25,8 @@ export default function AttendeeScreen() {
           setError(false);
         }
         setData(data);
-        console.log("Got Data!");
       })
-      .catch((error) => setError(true));
+      .catch((error) => console.log(error));
 
     wait(3000).then(() => setRefreshing(false));
   }, []);
@@ -36,7 +35,7 @@ export default function AttendeeScreen() {
     <View style={GlobalStyles.contentContainer}>
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refresh()} />
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} />
         }
       >
         <SearchComponent list={attendeeData} />

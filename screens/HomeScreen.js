@@ -64,9 +64,7 @@ export default function HomeScreen() {
   const refreshData = React.useCallback(() => {
     console.log("Refreshing for home screen");
     setRefreshing(true);
-    fetch("https://nemesis2.dev.unswengsoc.com/attendees", {
-      num_specified: 5,
-    })
+    fetch("https://nemesis2.dev.unswengsoc.com/attendees")
       .then((res) => res.json())
       .then((data) => {
         if (internalError) {
@@ -80,11 +78,7 @@ export default function HomeScreen() {
     fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
       .then((res) => res.json())
       .then((data) => {
-        if (internalError) {
-          setError(false);
-        }
-        console.log("got data");
-        setStatPercentage(data.signedinpercentage * 100);
+        setStatPercentage(data.signedinpercentage);
       })
       .catch((error) => setError(true));
 

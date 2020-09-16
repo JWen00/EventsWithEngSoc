@@ -31,7 +31,7 @@ export default function UserCard(props) {
           ) : (
             <Icon size={23} name="md-card" />
           )}
-          {props.hasCheckedIn == true ? (
+          {props.checked_in == true ? (
             <Icon size={23} focused={Colors.successGreen} name="md-done-all" />
           ) : (
             <Icon size={23} name="md-done-all" />
