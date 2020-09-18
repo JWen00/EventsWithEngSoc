@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Keyboard } from "react-native";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { Chip } from "react-native-paper";
@@ -11,26 +11,29 @@ export default function SearchComponent(props) {
   const [isFocused, setFocused] = useState(false);
   const [query, setQuery] = useState("");
 
-  const [tmpList, setTmpList] = useState([]);
-  const [list, setList] = useState([]);
-
-  React.useEffect(() => {
-    setTmpList(props.list);
-    setList(props.list);
-  }, [props.list]);
-
   const [filterPaid, setFilterPaid] = useState(false);
   const [filterCheckedIn, setFilterCheckedIn] = useState(false);
 
-  const updateList = () => {
-    const l = list.filter((person) => {
-      return person.paid == filterPaid && person.checked_in == filterCheckedIn;
-    });
-    console.log(l);
-    console.log("paid: " + filterPaid);
-    console.log("checked_in: " + filterCheckedIn);
-    setTmpList(l);
-  };
+  const [tmpList, setTmpList] = useState([]);
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    console.log("Rerendering list...");
+    console.log(" >>> Paid Status: " + filterPaid);
+    console.log(" >>> Checked In Status: " + filterCheckedIn);
+    setList(props.list);
+    if (filterPaid == false && filterCheckedIn == false) {
+      setTmpList(props.list);
+    } else {
+      const l = list.filter((person) => {
+        return (
+          person.paid == filterPaid && person.checked_in == filterCheckedIn
+        );
+      });
+      setTmpList(l);
+    }
+  });
+
   return (
     <View>
       {/* Search Bar */}
@@ -60,6 +63,7 @@ export default function SearchComponent(props) {
             onPress={() => {
               setQuery("");
               setFocused(false);
+              Keyboard.dismiss();
             }}
           >
             <Icon size={27} name="md-close" />
@@ -74,11 +78,8 @@ export default function SearchComponent(props) {
           selectedColor={Colors.navyBlue}
           style={styles.filterContent}
           onPress={() => {
-            console.log("initial paid: " + filterPaid);
             setFilterPaid(!filterPaid);
-            console.log("!paid: " + filterPaid);
-
-            updateList();
+            console.log("filter paid: " + filterPaid);
           }}
         >
           Paid
@@ -89,7 +90,7 @@ export default function SearchComponent(props) {
           style={styles.filterContent}
           onPress={() => {
             setFilterCheckedIn(!filterCheckedIn);
-            updateList();
+            console.log("filter checked in: " + filterCheckedIn);
           }}
         >
           Checked-In

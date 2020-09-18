@@ -33,7 +33,8 @@ export default function HomeScreen() {
     async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
     };
-  });
+    refreshData();
+  }, []);
 
   const modalSubmitForm = () => {
     fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
@@ -70,10 +71,17 @@ export default function HomeScreen() {
         if (internalError) {
           setError(false);
         }
-        console.log(data);
-        setSignIns(data);
+        var size = 0;
+        const newData = data.filter((person) => {
+          if (size >= 5) {
+            return;
+          }
+          ++size;
+          return person.checked_in == true;
+        });
+        setSignIns(newData);
       })
-      .catch((error) => setError(true));
+      .catch((error) => console.log(error));
 
     fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
       .then((res) => res.json())
@@ -119,7 +127,7 @@ export default function HomeScreen() {
       {!openCamera && (
         <View>
           {/* Cards showing recent sign-ins */}
-          <Text style={styles.headerText}>Recent Sign ins</Text>
+          <Text style={GlobalStyles.headerText}>Recent Sign ins</Text>
           {recentSignIns.map((person) => (
             <UserCard
               fname={person.first_name}
@@ -269,15 +277,6 @@ const styles = StyleSheet.create({
     color: Colors.darkGrey,
     fontSize: 20,
     margin: 7,
-  },
-
-  headerText: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: Colors.darkGrey,
-    left: 15,
-    top: 15,
-    marginBottom: 40,
   },
 
   modalContainer: {

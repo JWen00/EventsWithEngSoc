@@ -16,12 +16,14 @@ export default function UserCard(props) {
     >
       <View style={styles.cardContent}>
         <View style={styles.cardDetail}>
-          <Text style={GlobalStyles.paragraph}>
-            {props.fname} {props.last_name}
+          <Text>
+            <Text style={GlobalStyles.titleText}>
+              {props.fname} {props.last_name}
+            </Text>
+            {props.zid != null && (
+              <Text style={GlobalStyles.zid}>(z{props.zid})</Text>
+            )}
           </Text>
-          {props.zid != null && (
-            <Text style={GlobalStyles.titleText}>z{props.zid}</Text>
-          )}
         </View>
 
         {/* Show paid/checked-in */}
@@ -42,8 +44,12 @@ export default function UserCard(props) {
         {/* When expanded, show details */}
         {isExpanded && (
           <View>
-            {props.checked_in && <Text>{props.time}</Text>}
-            <Text>{props.info}</Text>
+            {props.checked_in && (
+              <Text style={GlobalStyles.paragraph}>{props.time}</Text>
+            )}
+            <Text style={GlobalStyles.paragraph}>
+              Additional Message: {props.info}
+            </Text>
           </View>
         )}
       </View>
@@ -71,6 +77,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     flexDirection: "row",
+    padding: 5,
   },
   cardIcon: {
     flexDirection: "row",

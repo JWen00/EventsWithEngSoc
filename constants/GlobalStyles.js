@@ -8,14 +8,34 @@ export const GlobalStyles = StyleSheet.create({
     flexDirection: "column",
   },
   titleText: {
-    fontSize: 16,
+    marginTop: 5,
+    marginBottom: 3,
+    fontSize: 18,
+    lineHeight: 22,
     fontWeight: "bold",
-    color: "#333",
+    color: Colors.navyBlue,
   },
+
+  headerText: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: Colors.darkGrey,
+    left: 15,
+    top: 15,
+    marginBottom: 40,
+  },
+
   paragraph: {
+    marginTop: 4,
+    marginBottom: 4,
+    lineHeight: 20,
+    color: Colors.darkGrey,
+  },
+  zid: {
     marginTop: 2,
     marginBottom: 5,
     lineHeight: 20,
-    color: Colors.darkGrey,
+    fontSize: 16,
+    lineHeight: 22,
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, RefreshControl } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../constants/GlobalStyles";
@@ -15,8 +15,8 @@ export default function AttendeeScreen() {
     });
   };
 
-  const refresh = React.useCallback(() => {
-    console.log("Refreshing for attendee screen");
+  const refresh = useEffect(() => {
+    console.log("Rerendering attendee screen...");
     setRefreshing(true);
     fetch("https://nemesis2.dev.unswengsoc.com/attendees")
       .then((res) => res.json())
@@ -26,9 +26,9 @@ export default function AttendeeScreen() {
         }
         setData(data);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => setError(true));
 
-    wait(3000).then(() => setRefreshing(false));
+    wait(1500).then(() => setRefreshing(false));
   }, []);
 
   return (
