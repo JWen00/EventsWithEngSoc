@@ -40,13 +40,15 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: Colors.white,
     borderRadius: 20,
-    margin: 10,
+    marginVertical: 5,
+    marginHorizontal: 15,
     height: 120,
     padding: 5,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
+    elevation: 2,
   },
 
   progressMeter: {

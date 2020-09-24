@@ -4,7 +4,7 @@ import Colors from "./Colors";
 export const GlobalStyles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    margin: 20,
+    // margin: 20,
     flexDirection: "column",
   },
   titleText: {
@@ -22,7 +22,8 @@ export const GlobalStyles = StyleSheet.create({
     color: Colors.darkGrey,
     left: 15,
     top: 15,
-    marginBottom: 40,
+    marginBottom: 20,
+    marginTop: 15,
   },
 
   paragraph: {

@@ -7,6 +7,7 @@ import {
   CheckBox,
   TextInput,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
@@ -45,6 +46,7 @@ export default function HomeScreen() {
         if (internalError) {
           setError(false);
         }
+        alert("Sent!");
       })
       .catch((error) => setError(true));
 
@@ -65,21 +67,13 @@ export default function HomeScreen() {
   const refreshData = React.useCallback(() => {
     console.log("Refreshing for home screen");
     setRefreshing(true);
-    fetch("https://nemesis2.dev.unswengsoc.com/attendees")
+    fetch("https://nemesis2.dev.unswengsoc.com/recentattendees")
       .then((res) => res.json())
       .then((data) => {
         if (internalError) {
           setError(false);
         }
-        var size = 0;
-        const newData = data.filter((person) => {
-          if (size >= 5) {
-            return;
-          }
-          ++size;
-          return person.checked_in == true;
-        });
-        setSignIns(newData);
+        setSignIns(data);
       })
       .catch((error) => console.log(error));
 
@@ -110,7 +104,8 @@ export default function HomeScreen() {
           <Icon size={27} focused={Colors.white} name="md-camera" />
         </TouchableOpacity>
       </View>
-      {internalError ? <Text>Internal Server Error!</Text> : <View></View>}
+
+      {/* {internalError ? <Text>Internal Server Error!</Text> : <></>} */}
       {/* View when camera is open */}
       {openCamera && (
         <BarCodeScanner
@@ -238,17 +233,18 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   baseContainer: {
     flex: 1,
-    margin: 10,
   },
   cameraStyle: {
-    ...StyleSheet.absoluteFill,
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    // position: "absolute",
+    flex: 1,
   },
 
   cameraButton: {
     justifyContent: "space-between",
+    flex: 1,
     position: "absolute",
-    bottom: 20,
-    right: 15,
     width: 60,
     height: 60,
     borderRadius: 100 / 2,
@@ -263,11 +259,14 @@ const styles = StyleSheet.create({
   addSignInContainer: {
     backgroundColor: Colors.white,
     borderRadius: 20,
-    margin: 5,
+    marginVertical: 5,
+    marginHorizontal: 15,
+    width: 300,
     height: 80,
     display: "flex",
     alignItems: "center",
     padding: 5,
+    elevation: 2,
     flexDirection: "row",
     justifyContent: "center",
   },
@@ -287,12 +286,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 20,
     shadowColor: "black",
-    elevation: 5,
+    elevation: 200,
     height: 300,
     paddingBottom: 35,
     paddingTop: 25,
-    borderWidth: 2,
-    borderColor: Colors.oceanBlue,
+    borderWidth: 1,
+    borderColor: Colors.veryLightGrey,
+    backfaceVisibility: "hidden",
   },
 
   modalButton: {

@@ -45,6 +45,7 @@ export default function SearchComponent(props) {
 
           <ScrollView style={styles.searchBar}>
             <TextInput
+              placeholder="Search..."
               onChangeText={(q) => {
                 setQuery(q);
               }}
@@ -143,7 +144,9 @@ export default function SearchComponent(props) {
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    textAlignVertical: "center",
+    margin: 20,
+
+    // backgroundColor: Colors.primeRed,
   },
   searchBarContent: {
     display: "flex",
@@ -176,9 +179,5 @@ const styles = StyleSheet.create({
     margin: 2,
     width: 130,
     justifyContent: "center",
-  },
-
-  attendeeList: {
-    padding: 5,
   },
 });
