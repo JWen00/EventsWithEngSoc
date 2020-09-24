@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
-    elevation: 2,
+    elevation: 1,
   },
 
   progressMeter: {

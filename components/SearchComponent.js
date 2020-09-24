@@ -144,17 +144,18 @@ export default function SearchComponent(props) {
 
 const styles = StyleSheet.create({
   searchBarContainer: {
-    margin: 20,
+    margin: 15,
 
     // backgroundColor: Colors.primeRed,
   },
   searchBarContent: {
     display: "flex",
     justifyContent: "space-between",
-    backgroundColor: Colors.veryLightGrey,
+    backgroundColor: Colors.white,
     flexDirection: "row",
     padding: 5,
     borderRadius: 35,
+    elevation: 1,
   },
   searchBarIcon: {
     top: 10,

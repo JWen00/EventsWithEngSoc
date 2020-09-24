@@ -4,8 +4,8 @@ import Colors from "./Colors";
 export const GlobalStyles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    // margin: 20,
-    flexDirection: "column",
+    // flexDirection: "column",
+    // backgroundColor: Colors.primeRed,
   },
   titleText: {
     marginTop: 5,
