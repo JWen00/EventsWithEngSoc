@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, TextInput, Keyboard } from "react-native";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
-import { Chip } from "react-native-paper";
+// import { Chip } from "react-native-paper";
 
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
@@ -73,7 +73,7 @@ export default function SearchComponent(props) {
       </View>
 
       {/* Search Filters */}
-      <View style={styles.filterContainer}>
+      {/* <View style={styles.filterContainer}>
         <Chip
           selected={filterPaid}
           selectedColor={Colors.navyBlue}
@@ -96,7 +96,7 @@ export default function SearchComponent(props) {
         >
           Checked-In
         </Chip>
-      </View>
+      </View> */}
 
       {/* Show results of search */}
       {isFocused ? (
