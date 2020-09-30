@@ -4,33 +4,30 @@ import Colors from "./Colors";
 export const GlobalStyles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    // flexDirection: "column",
-    // backgroundColor: Colors.primeRed,
   },
-  titleText: {
-    marginTop: 5,
-    marginBottom: 3,
-    fontSize: 18,
+
+  subtitle: {
+    margin: 5,
+    marginTop: 20,
+    marginLeft: 15,
+    fontSize: 20,
     lineHeight: 22,
     fontWeight: "bold",
     color: Colors.navyBlue,
   },
 
-  headerText: {
-    fontSize: 25,
+  title: {
+    fontSize: 40,
     fontWeight: "bold",
-    color: Colors.darkGrey,
-    left: 15,
-    top: 15,
-    marginBottom: 20,
-    marginTop: 15,
+    color: Colors.navyBlue,
+    marginTop: 30,
   },
 
   paragraph: {
-    marginTop: 4,
-    marginBottom: 4,
+    margin: 5,
+    fontSize: 15,
     lineHeight: 20,
-    color: Colors.darkGrey,
+    color: Colors.navyBlue,
   },
   zid: {
     marginTop: 2,
