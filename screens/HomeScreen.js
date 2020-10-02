@@ -121,16 +121,16 @@ export default function HomeScreen() {
       {!openCamera && (
         <>
           {/* Camera Button */}
-          <Draggable x={300} y={500}>
-            <TouchableOpacity
-              style={styles.cameraButton}
-              onPress={() => {
-                setCamera(!openCamera);
-              }}
-            >
-              <Icon size={27} focused={Colors.white} name="md-camera" />
-            </TouchableOpacity>
-          </Draggable>
+          {/* <Draggable x={200} y={500}> */}
+          <TouchableOpacity
+            style={styles.cameraButton}
+            onPress={() => {
+              setCamera(!openCamera);
+            }}
+          >
+            <Icon size={27} focused={Colors.white} name="md-camera" />
+          </TouchableOpacity>
+          {/* </Draggable> */}
           <ScrollView
             refreshControl={
               <RefreshControl
@@ -351,8 +351,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     shadowColor: "black",
     shadowOpacity: 1.0,
-    elevation: 10,
+    elevation: 50,
     zIndex: 1,
+    position: "absolute",
+    bottom: 20,
+    right: 30,
   },
   cameraButtonClose: {
     width: 70,
@@ -366,7 +369,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     shadowColor: "black",
     shadowOpacity: 1.0,
-    elevation: 5,
+    elevation: 50,
     zIndex: 1,
   },
 
