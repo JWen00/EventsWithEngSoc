@@ -2,7 +2,11 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
+<<<<<<< HEAD
   "packagerPid": 25491,
+=======
+  "packagerPid": 4214,
+>>>>>>> Feature-Camera
   "expoServerNgrokUrl": null,
   "packagerNgrokUrl": null,
   "ngrokPid": null,

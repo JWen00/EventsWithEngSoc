@@ -6,166 +6,208 @@ import {
   Modal,
   CheckBox,
   TextInput,
+  RefreshControl,
+  Image,
 } from "react-native";
 import React, { useState, useEffect } from "react";
+import { Camera } from "expo-camera";
+import { GlobalStyles } from "../constants/GlobalStyles";
+import { ScrollView } from "react-native-gesture-handler";
+import Draggable from "react-native-draggable";
+
+import UserCard from "../components/UserCard";
 import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
-import SignInRow from "../components/SignInRow";
-import { Entypo } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { BarCodeScanner } from "expo-barcode-scanner";
-import { GlobalStyles } from "../constants/GlobalStyles";
-import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { ProgressBar } from "react-native-paper";
+// import graphic_vector_image from "../assets/images/home_vg.png";
 
 export default function HomeScreen() {
   const [openCamera, setCamera] = useState(false);
-  const [openPopUp, setPopUp] = useState(false);
+  const [openModal, setModal] = useState(false);
 
   const [name, setName] = useState("");
   const [zID, setzID] = useState("");
   const [isArcMem, setIsArmMem] = useState(false);
 
+  const [internalError, setError] = useState(false);
+  const [isRefreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
-    (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-    })();
+    async () => {
+      const { status } = await Camera.requestPermissionsAsync();
+    };
+    refreshData();
   }, []);
 
-  const openModalButton = () => (
-    <TouchableOpacity
-      onPress={() => {
-        this.setState({
-          modalVisible: true,
-        });
-      }}
-    >
-      <Icon size={35} focused={Colors.white} name="md-add" />
-    </TouchableOpacity>
-  );
-
   const modalSubmitForm = () => {
-    alert("Submitting data!");
-    setPopUp(false);
+    fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
+      zid: zID,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (internalError) {
+          setError(false);
+        }
+        console.log("SENT!");
+        alert("Sent!");
+      })
+      .catch((error) => console.log(error));
+
+    setModal(false);
     setzID("");
     setName("");
     setIsArmMem(false);
-    // TEMPORARY! TODO
   };
 
-  // const modalSubmitForm = async () => {
-  //   return (
-  //     fetch("localhost:5000/api/v1/submit"),
-  //     {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         name: name,
-  //         zID: zID,
-  //         isArcMem: isArcMem,
-  //       }),
-  //     }
-  //   );
-  // };
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout);
+    });
+  };
+
+  const [recentSignIns, setSignIns] = useState([]);
+  const [statPercentage, setStatPercentage] = useState(75);
+
+  const refreshData = React.useCallback(() => {
+    console.log("Refreshing for home screen");
+    setRefreshing(true);
+    fetch("https://nemesis2.dev.unswengsoc.com/recentattendees")
+      .then((res) => res.json())
+      .then((data) => {
+        if (internalError) {
+          setError(false);
+        }
+        setSignIns(data);
+      })
+      .catch((error) => console.log(error));
+
+    fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
+      .then((res) => res.json())
+      .then((data) => {
+        setStatPercentage(data.signedinpercentage);
+      })
+      .catch((error) => setError(true));
+
+    wait(1500).then(() => setRefreshing(false));
+  }, []);
 
   return (
-    <View style={styles.contentContainer}>
-      {/* Open the camera when button has been pressed */}
-      {!openCamera && (
+    <>
+      {/* View when camera is open */}
+      {openCamera && (
         <>
-          <View style={styles.card}>
-            <View style={styles.miniStat}>
-              <MaterialCommunityIcons
-                name="account-check"
-                size={50}
-                color="black"
-              />
-              <View style={styles.miniStatText}>
-                <Text style={GlobalStyles.titleText}>Sign ins</Text>
-                <Text>93</Text>
-              </View>
-            </View>
-            <View style={styles.progressMeter}>
-              <AnimatedCircularProgress
-                size={75}
-                width={10}
-                fill={77}
-                tintColor="#22b34e"
-                onAnimationComplete={() => console.log("onAnimationComplete")}
-                backgroundColor="#cc2d2d"
-              >
-                {(fill) => <Text style={GlobalStyles.titleText}>{fill}%</Text>}
-              </AnimatedCircularProgress>
-              <View></View>
-            </View>
-            <View style={styles.miniStat}>
-              <View style={styles.miniStatText}>
-                <Text style={GlobalStyles.titleText}>Tickets</Text>
-                <Text>121</Text>
-              </View>
-              <Entypo name="ticket" size={50} color="black" />
-            </View>
-          </View>
-          <View style={styles.signIns}>
-            <Text style={styles.signInText}>Recent Sign ins</Text>
-            <View style={styles.rowContainer}>
-              <SignInRow />
-              <SignInRow />
-              <SignInRow />
-              <SignInRow />
-              <SignInRow />
-            </View>
-          </View>
+          <Camera
+            style={styles.cameraStyle}
+            type={Camera.Constants.Type.back}
+            onBarCodeScanned={(event) => {
+              setCamera(false);
+              setModal(true);
+              console.log(event.data);
+              setzID(event.data);
+            }}
+          ></Camera>
+          <TouchableOpacity
+            style={styles.cameraButtonClose}
+            onPress={() => {
+              setCamera(!openCamera);
+            }}
+          >
+            <Icon size={40} focused={Colors.navyBlue} name="md-close" />
+          </TouchableOpacity>
         </>
       )}
 
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
-      >
-        {openCamera && (
-          <BarCodeScanner
-            onBarCodeScanned={({ type, data }) => {
-              setCamera(false);
-              setPopUp(true);
-              setzID(data);
+      {/* View when camera is NOT open*/}
+      {!openCamera && (
+        <>
+          {/* Camera Button */}
+          {/* <Draggable x={200} y={500}> */}
+          <TouchableOpacity
+            style={styles.cameraButton}
+            onPress={() => {
+              setCamera(!openCamera);
             }}
-            style={styles.cameraStyle}
-          />
-        )}
-      </View>
+          >
+            <Icon size={27} focused={Colors.white} name="md-camera" />
+          </TouchableOpacity>
+          {/* </Draggable> */}
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isRefreshing}
+                onRefresh={refreshData}
+              />
+            }
+            style={GlobalStyles.contentContainer}
+          >
+            <View>
+              {/* Cards showing recent sign-ins */}
+              <View style={styles.titleContainer}>
+                <Text style={GlobalStyles.title}>October Ball</Text>
+                <Text style={GlobalStyles.paragraph}> 23rd October 2020 </Text>
+              </View>
+              <View style={styles.dashboard}>
+                <View style={styles.LeftContainer}>
+                  <View style={styles.labelContainer}>
+                    <Icon
+                      size={27}
+                      focused={Colors.navyBlue}
+                      name="md-people"
+                    />
+                    <Text style={styles.labelText}>
+                      Attendence {statPercentage}%
+                    </Text>
+                  </View>
+                  <ProgressBar
+                    progress={statPercentage / 100}
+                    color={Colors.successGreen}
+                    style={styles.progressBar}
+                  />
+                </View>
+                <View style={styles.RightContainer}>
+                  <View style={styles.RightContainerChild}>
+                    <Icon size={30} focused={Colors.primeRed} name="md-alert" />
+                    <Text style={GlobalStyles.paragraph}>40 not signed in</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.RightContainerChild}
+                    onPress={() => {
+                      setModal(true);
+                    }}
+                  >
+                    <Icon size={32} focused={Colors.navyBlue} name="md-add" />
+                    <Text style={styles.addInputText}> Add Manually</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
 
-      <View style={styles.buttonContainerLeft}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setPopUp(!openPopUp);
-          }}
-        >
-          <Icon size={27} focused={Colors.grey} name="md-add" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainerRight}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            setCamera(!openCamera);
-          }}
-        >
-          <Icon size={27} focused={Colors.grey} name="md-camera" />
-        </TouchableOpacity>
-      </View>
+              <Text style={GlobalStyles.subtitle}>Recent Sign ins</Text>
+              {recentSignIns.map((person) => (
+                <UserCard
+                  fname={person.first_name}
+                  lname={person.last_name}
+                  zid={person.zid}
+                  checked_in={person.checked_in}
+                  paid={person.paid}
+                  time={person.checked_in_time}
+                  info={person.information}
+                />
+              ))}
+
+              {/* Card to add a new sign-in */}
+            </View>
+          </ScrollView>
+        </>
+      )}
 
       {/* Open Modal when button has been pressed */}
-      {openPopUp && (
+      {openModal && (
         <Modal
           animationType="slide"
           transparent={true}
-          visible={openPopUp}
+          visible={openModal}
           onRequestClose={() => {
-            setPopUp(false);
+            setModal(false);
             setzID("");
             setName("");
             setIsArmMem(false);
@@ -176,19 +218,19 @@ export default function HomeScreen() {
               {zID == "" ? (
                 <TouchableOpacity
                   onPress={() => {
-                    setPopUp(false);
+                    setModal(false);
                     setzID("");
                     setName("");
                     setIsArmMem(false);
                   }}
                 >
-                  <Icon size={35} focused={Colors.lightGrey} name="md-trash" />
+                  <Icon size={35} focused={Colors.darkGrey} name="md-trash" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={() => {
-                    alert("Got the data!");
-                    setPopUp(false);
+                    modalSubmitForm();
+                    setModal(false);
                     setzID("");
                     setName("");
                     setIsArmMem(false);
@@ -196,159 +238,148 @@ export default function HomeScreen() {
                 >
                   <Icon
                     size={35}
-                    focused={Colors.lightGrey}
+                    focused={Colors.darkGrey}
                     name="md-paper-plane"
                   />
                 </TouchableOpacity>
               )}
             </View>
             <View style={styles.inputContainer}>
-              <View>
-                <View style={styles.inputContent}>
-                  <TextInput
-                    placeholder="Full Name"
-                    value={name}
-                    onChangeText={(n) => {
-                      setName(n);
-                    }}
-                  />
-                </View>
-                <View style={styles.inputContent}>
-                  <TextInput
-                    placeholder="zID"
-                    value={zID}
-                    onChangeText={(id) => {
-                      setzID(id);
-                    }}
-                  />
-                </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  placeholder="Full Name"
+                  value={name}
+                  onChangeText={(n) => {
+                    setName(n);
+                  }}
+                />
+              </View>
+              <View style={styles.inputContent}>
+                <TextInput
+                  placeholder="zID"
+                  value={zID}
+                  onChangeText={(id) => {
+                    setzID(id);
+                  }}
+                />
+              </View>
 
-                <View style={styles.inputLabel}>
-                  <Text>Are you an arc-member?</Text>
-                  <CheckBox
-                    value={isArcMem}
-                    onValueChange={(isChecked) => {
-                      setIsArmMem(isChecked);
-                    }}
-                  ></CheckBox>
-                </View>
+              <View style={styles.inputLabel}>
+                <Text>Are you an arc-member?</Text>
+                <CheckBox
+                  value={isArcMem}
+                  onValueChange={(isChecked) => {
+                    setIsArmMem(isChecked);
+                  }}
+                ></CheckBox>
               </View>
             </View>
           </View>
         </Modal>
       )}
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  titleContainer: {
+    marginVertical: 5,
+    marginHorizontal: 5,
+    padding: 5,
+  },
+
+  dashboard: {
+    display: "flex",
+    flexDirection: "column",
     flex: 1,
-    justifyContent: "center",
+    padding: 10,
+  },
+  LeftContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    display: "flex",
+    padding: 15,
+    elevation: 2,
+    margin: 5,
+  },
+  progressBar: {
+    flex: 1,
+    marginHorizontal: 5,
+    marginTop: 2,
   },
   cameraStyle: {
     ...StyleSheet.absoluteFill,
   },
 
-  buttonContainerLeft: {
-    justifyContent: "space-between",
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-  },
-  buttonContainerRight: {
-    justifyContent: "space-between",
-    position: "absolute",
-    bottom: 10,
-    right: 10,
+  RightContainer: {
+    display: "flex",
+    flex: 1,
+    flexDirection: "column",
   },
 
-  card: {
-    backgroundColor: Colors.white,
+  RightContainerChild: {
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 20,
-    height: 100,
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight: 10,
-
-    display: "flex",
+    padding: 15,
+    elevation: 2,
+    margin: 5,
+    flex: 1,
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-
-  miniStat: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  miniStatText: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 5,
-  },
-  signIns: {
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    height: 420,
-    margin: 10,
-    // display: "flex",
-    // flexDirection: "row",
-    // alignItems: "center",
     // justifyContent: "space-evenly",
+    alignContent: "center",
   },
 
-  signInText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    left: 15,
-    top: 15,
-    marginBottom: 40,
-  },
-
-  rowContainer: {
-    display: "flex",
-  },
-  signInRow: {
+  labelContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 5,
-    marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
   },
 
-  signInIcon: {
-    display: "flex",
-    flexDirection: "row",
+  labelText: {
+    fontWeight: "bold",
+    color: Colors.navyBlue,
+    fontSize: 12,
   },
-  personIcon: {
-    //marginBottom: 10,
-    bottom: 3,
-  },
-  personDetails: {
-    marginLeft: 10,
-  },
-  timeStamp: {
-    marginBottom: 20,
+  cameraStyle: {
+    ...StyleSheet.absoluteFillObject,
   },
 
-  button: {
-    width: 60,
-    height: 60,
+  cameraButton: {
+    width: 70,
+    height: 70,
     borderRadius: 100 / 2,
-    backgroundColor: Colors.oceanBlue, // Ocean Blue
+    backgroundColor: Colors.oceanBlue,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "black",
     shadowOpacity: 1.0,
-    elevation: 5,
-    margin: 10,
+    elevation: 50,
+    zIndex: 1,
+    position: "absolute",
+    bottom: 20,
+    right: 30,
+  },
+  cameraButtonClose: {
+    width: 70,
+    height: 70,
+    position: "absolute",
+    bottom: 20,
+    right: 30,
+    borderRadius: 100 / 2,
+    backgroundColor: Colors.white,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "black",
+    shadowOpacity: 1.0,
+    elevation: 50,
+    zIndex: 1,
+  },
+
+  addInputText: {
+    fontWeight: "bold",
+    color: Colors.navyBlue,
+    fontSize: 15,
   },
 
   modalContainer: {
@@ -356,28 +387,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 20,
     top: 220,
-    // padding: 5,
     backgroundColor: Colors.white,
     borderRadius: 20,
     shadowColor: "black",
-    elevation: 5,
+    elevation: 200,
     height: 300,
     paddingBottom: 35,
     paddingTop: 25,
-    borderWidth: 2,
-    borderColor: Colors.oceanBlue,
-  },
-  modalButton: {
-    height: 50,
-    width: 50,
-    borderRadius: 8,
-    borderColor: Colors.lightGrey,
     borderWidth: 1,
-    // backgroundColor: Colors.primeRed,
+    borderColor: Colors.veryLightGrey,
+    backfaceVisibility: "hidden",
+  },
+
+  modalButton: {
+    borderWidth: 1,
+    borderColor: Colors.darkGrey,
+    borderRadius: 15,
+    height: 60,
+    width: 60,
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: 10,
   },
+
   inputLabel: {
     padding: 5,
     flexDirection: "row",
@@ -391,12 +423,15 @@ const styles = StyleSheet.create({
   },
 
   inputContent: {
-    // textAlignVertical: "center",
-    // width: 165,
     marginBottom: 5,
     padding: 5,
     borderWidth: 1,
-    borderColor: Colors.veryLightGrey,
+    borderColor: Colors.lightGrey,
     borderRadius: 5,
+  },
+
+  image: {
+    height: 100,
+    width: 200,
   },
 });
