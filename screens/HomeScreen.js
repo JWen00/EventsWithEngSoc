@@ -41,35 +41,20 @@ export default function HomeScreen() {
   }, []);
 
   const modalSubmitForm = () => {
-    // fetch("https://nemesis2.dev.unswengsoc.com/checkin", {
-    //   zid: zID.toString(),
-    // })
-    //   .then((res) => res.text())
-    //   .then((data) => {
-    //     if (internalError) {
-    //       setError(false);
-    //     }
-    //     console.log("SENT!");
-    //     alert("Sent!");
-    //   })
-    //   .catch((error) => console.log(error));
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
     var raw = JSON.stringify({ zid: zID.toString() });
-
     var requestOptions = {
       method: "PUT",
       headers: myHeaders,
       body: raw,
       redirect: "follow",
     };
-
     fetch("https://nemesis2.dev.unswengsoc.com/checkin", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
-
+      
     setManualModal(false);
     setzID("");
     setName("");
