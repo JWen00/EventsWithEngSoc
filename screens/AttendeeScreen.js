@@ -36,7 +36,6 @@ export default function AttendeeScreen() {
   }, []);
 
   async function checkoutAlert() {
-    console.log(toCheckout, "@@@@@@@@!!!!!SHANI")
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var raw = JSON.stringify({ zid: toCheckout.toString() });
@@ -86,7 +85,6 @@ export default function AttendeeScreen() {
           transparent={true}
           visible={openConfirmation}
           onRequestClose={() => {
-            console.log('hey man');
             setConfirmation(false);
           }}
         >
