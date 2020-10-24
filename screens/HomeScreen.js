@@ -8,6 +8,8 @@ import {
   TextInput,
   RefreshControl,
   Image,
+  Button,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
@@ -40,22 +42,8 @@ export default function HomeScreen() {
     refreshData();
   }, []);
 
-  const modalSubmitForm = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({ zid: zID.toString() });
-    var requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch("https://nemesis2.dev.unswengsoc.com/checkin", requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-      
-    setManualModal(false);
+  const closeAlert = () => {
+    setAutoModal(false);
     setzID("");
     setName("");
     setIsArmMem(false);
@@ -92,6 +80,44 @@ export default function HomeScreen() {
 
     wait(1500).then(() => setRefreshing(false));
   }, []);
+
+  async function createTwoButtonAlert () {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify({ zid: zID.toString() });
+    var requestOptions = {
+      method: "PUT",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    const response = await fetch("https://nemesis2.dev.unswengsoc.com/checkin", requestOptions);
+    const message = await response.json();
+    const successMessage = message.code == 200 ? "Successful Scan!" : "Something went wrong"; 
+    const reason = message.response == "OK" ? "User has been successfully checked in" : message.response;
+    return Alert.alert(
+      successMessage,
+      reason,
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+            closeAlert();
+            console.log("Cancel Pressed");
+          },
+          style: "cancel"
+        },
+        { text: "OK", 
+          onPress: () => {
+            closeAlert();
+            console.log("Ok Pressed");
+        }
+      }
+      ],
+      { cancelable: false }
+    );
+  }
+    
 
   return (
     <>
@@ -308,13 +334,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  onPress={() => {
-                    modalSubmitForm();
-                    setAutoModal(false);
-                    setzID("");
-                    setName("");
-                    setIsArmMem(false);
-                  }}
+                  onPress={createTwoButtonAlert}
                 >
                   <Icon
                     size={35}
@@ -325,8 +345,6 @@ export default function HomeScreen() {
               )}
             </View>
             <View style={styles.inputContainer}>
-              <Text>no u dont</Text>
-
               <View style={styles.inputContent}>
                 <TextInput
                   placeholder="zID"
