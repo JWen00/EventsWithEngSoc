@@ -7,5 +7,5 @@ ios/build
 android/app/build
 android/local.properties/
 app.json
-.expo/
+.expo/*
 yarn.lock/
