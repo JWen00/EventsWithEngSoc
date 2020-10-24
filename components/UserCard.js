@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Text, View, StyleSheet, Button, Alert } from "react-native";
+import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { GlobalStyles } from "../constants/GlobalStyles";
 import Icon from "../components/Icon";
@@ -43,13 +43,21 @@ export default function UserCard(props) {
       <View style={styles.cardContent}>
         {/* When expanded, show details */}
         {isExpanded && (
-          <View>
-            {props.checked_in && (
-              <Text style={GlobalStyles.paragraph}>{props.time}</Text>
-            )}
-            <Text style={GlobalStyles.paragraph}>
-              Additional Message: {props.info}
-            </Text>
+          <View style={styles.additionalContent}>
+            <View style={styles.additionalText}>
+              {props.checked_in && (
+                <Text style={GlobalStyles.paragraph}>{props.time}</Text>
+              )}
+              <Text style={GlobalStyles.paragraph}>
+                Additional Message: {props.info}
+              </Text>
+            </View>
+            {props.checked_in && (<TouchableWithoutFeedback onPress={() => {
+                props.checkoutUser(props.zid);
+                props.setConfirmation(true);
+              }}>
+                <Icon size={36} focused={Colors.dangerRed} name="md-log-out" />
+            </TouchableWithoutFeedback>)}
           </View>
         )}
       </View>
@@ -85,4 +93,16 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     marginRight: 2,
   },
+  additionalContent: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  additionalText: {
+    marginRight: 30
+  },
+  undoButton: {
+    height: 200,
+    width: 200,
+  }
 });

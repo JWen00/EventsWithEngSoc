@@ -120,6 +120,8 @@ export default function SearchComponent(props) {
                 paid={person.paid}
                 time={person.checked_in_time}
                 info={person.information}
+                checkoutUser={props.checkoutUser}
+                setConfirmation={props.setConfirmation}
               />
             ))}
         </View>
@@ -134,6 +136,8 @@ export default function SearchComponent(props) {
               paid={person.paid}
               time={person.checked_in_time}
               info={person.information}
+              checkoutUser={props.checkoutUser}
+              setConfirmation={props.setConfirmation}
             />
           ))}
         </View>

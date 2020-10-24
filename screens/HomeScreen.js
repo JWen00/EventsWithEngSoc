@@ -81,7 +81,7 @@ export default function HomeScreen() {
     wait(1500).then(() => setRefreshing(false));
   }, []);
 
-  async function createTwoButtonAlert () {
+  async function checkinAlert () {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     var raw = JSON.stringify({ zid: zID.toString() });
@@ -93,7 +93,7 @@ export default function HomeScreen() {
     };
     const response = await fetch("https://nemesis2.dev.unswengsoc.com/checkin", requestOptions);
     const message = await response.json();
-    const successMessage = message.code == 200 ? "Successful Scan!" : "Something went wrong"; 
+    const successMessage = message.code == 200 ? "Success" : "Something went wrong"; 
     const reason = message.response == "OK" ? "User has been successfully checked in" : message.response;
     return Alert.alert(
       successMessage,
@@ -116,8 +116,7 @@ export default function HomeScreen() {
       ],
       { cancelable: false }
     );
-  }
-    
+  };
 
   return (
     <>
@@ -334,7 +333,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  onPress={createTwoButtonAlert}
+                  onPress={checkinAlert}
                 >
                   <Icon
                     size={35}
