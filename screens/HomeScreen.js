@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   Modal,
-  CheckBox,
   TextInput,
   RefreshControl,
   Image,
@@ -28,9 +27,8 @@ export default function HomeScreen() {
   const [openManualModal, setManualModal] = useState(false);
   const [openAutoModal, setAutoModal] = useState(false);
 
-  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [zID, setzID] = useState("");
-  const [isArcMem, setIsArmMem] = useState(false);
 
   const [internalError, setError] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
@@ -41,13 +39,6 @@ export default function HomeScreen() {
     };
     refreshData();
   }, []);
-
-  const closeAlert = () => {
-    setAutoModal(false);
-    setzID("");
-    setName("");
-    setIsArmMem(false);
-  };
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -81,10 +72,12 @@ export default function HomeScreen() {
     wait(1500).then(() => setRefreshing(false));
   }, []);
 
-  async function checkinAlert () {
+  async function checkinAlert (from) {
+    console.log('where from:', from);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({ zid: zID.toString() });
+    const payload = (zID != "" ? { zid: zID.toString() } : { email: email.toString() });
+    var raw = JSON.stringify(payload);
     var requestOptions = {
       method: "PUT",
       headers: myHeaders,
@@ -99,18 +92,15 @@ export default function HomeScreen() {
       successMessage,
       reason,
       [
-        {
-          text: "Cancel",
-          onPress: () => {
-            closeAlert();
-            console.log("Cancel Pressed");
-          },
-          style: "cancel"
-        },
         { text: "OK", 
           onPress: () => {
-            closeAlert();
-            console.log("Ok Pressed");
+            if (from == 'auto') {
+              setAutoModal(false);
+            } else if (from == 'manual') {
+              setManualModal(false);
+            }
+            setzID("");
+            setEmail("");
         }
       }
       ],
@@ -236,32 +226,24 @@ export default function HomeScreen() {
           onRequestClose={() => {
             setManualModal(false);
             setzID("");
-            setName("");
-            setIsArmMem(false);
+            setEmail("");
           }}
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalButton}>
-              {zID == "" ? (
+              {(zID == "" && email == "") ? (
                 <TouchableOpacity
                   onPress={() => {
                     setManualModal(false);
                     setzID("");
-                    setName("");
-                    setIsArmMem(false);
+                    setEmail("");
                   }}
                 >
                   <Icon size={35} focused={Colors.darkGrey} name="md-trash" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  onPress={() => {
-                    modalSubmitForm();
-                    setManualModal(false);
-                    setzID("");
-                    setName("");
-                    setIsArmMem(false);
-                  }}
+                  onPress={() => checkinAlert('manual')}
                 >
                   <Icon
                     size={35}
@@ -274,31 +256,26 @@ export default function HomeScreen() {
             <View style={styles.inputContainer}>
               <View style={styles.inputContent}>
                 <TextInput
-                  placeholder="Full Name"
-                  value={name}
-                  onChangeText={(n) => {
-                    setName(n);
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={(e) => {
+                    setEmail(e);
+                    setzID("");
                   }}
                 />
               </View>
+              <Text style={styles.orText}>
+                OR
+              </Text>
               <View style={styles.inputContent}>
                 <TextInput
-                  placeholder="zID"
+                  placeholder="zID (omit the z)"
                   value={zID}
                   onChangeText={(id) => {
                     setzID(id);
+                    setEmail("");
                   }}
                 />
-              </View>
-
-              <View style={styles.inputLabel}>
-                <Text>Are you an arc-member?</Text>
-                <CheckBox
-                  value={isArcMem}
-                  onValueChange={(isChecked) => {
-                    setIsArmMem(isChecked);
-                  }}
-                ></CheckBox>
               </View>
             </View>
           </View>
@@ -314,8 +291,7 @@ export default function HomeScreen() {
           onRequestClose={() => {
             setAutoModal(false);
             setzID("");
-            setName("");
-            setIsArmMem(false);
+            setEmail("");
           }}
         >
           <View style={styles.modalContainer}>
@@ -325,15 +301,14 @@ export default function HomeScreen() {
                   onPress={() => {
                     setAutoModal(false);
                     setzID("");
-                    setName("");
-                    setIsArmMem(false);
+                    setEmail("");
                   }}
                 >
                   <Icon size={35} focused={Colors.darkGrey} name="md-trash" />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
-                  onPress={checkinAlert}
+                  onPress={() => checkinAlert('auto')}
                 >
                   <Icon
                     size={35}
@@ -471,7 +446,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     shadowColor: "black",
     elevation: 200,
-    height: 300,
+    height: 220,
     paddingBottom: 35,
     paddingTop: 25,
     borderWidth: 1,
@@ -483,8 +458,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.darkGrey,
     borderRadius: 15,
-    height: 60,
-    width: 60,
+    height: 50,
+    width: 50,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -514,4 +489,11 @@ const styles = StyleSheet.create({
     height: 100,
     width: 200,
   },
+
+  orText: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 5,
+    marginTop: 0
+  }
 });

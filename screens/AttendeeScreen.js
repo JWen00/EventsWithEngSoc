@@ -46,11 +46,6 @@ export default function AttendeeScreen() {
       redirect: "follow",
     };
 
-    const closeAlert = () => {
-      setConfirmation(false);
-      setToCheckout("");
-    };
-
     const response = await fetch("https://nemesis2.dev.unswengsoc.com/checkout", requestOptions);
     const message = await response.json();
     const successMessage = message.code == 200 ? "Success" : "Something went wrong"; 
@@ -59,18 +54,10 @@ export default function AttendeeScreen() {
       successMessage,
       reason,
       [
-        {
-          text: "Cancel",
-          onPress: () => {
-            closeAlert();
-            console.log("Cancel Pressed");
-          },
-          style: "cancel"
-        },
         { text: "OK", 
           onPress: () => {
-            closeAlert();
-            console.log("Ok Pressed");
+            setConfirmation(false);
+            setToCheckout("");
         }
       }
       ],
