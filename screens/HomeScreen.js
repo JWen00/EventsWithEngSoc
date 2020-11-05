@@ -21,7 +21,7 @@ import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
 import { ProgressBar } from "react-native-paper";
 // import graphic_vector_image from "../assets/images/home_vg.png";
-
+//test comment@@@@@@@@@@@@@@@@@@@@@@@@@
 export default function HomeScreen() {
   const [openCamera, setCamera] = useState(false);
   const [openManualModal, setManualModal] = useState(false);

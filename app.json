@@ -19,6 +19,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "android": {
+      "package": "com.engsoc.eventswithengsoc",
+      "versionCode": 2
+     },
+     "scheme": "nemesis2"
   }
 }
