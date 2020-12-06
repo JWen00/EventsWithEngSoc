@@ -161,7 +161,7 @@ export default function HomeScreen() {
               {/* Cards showing recent sign-ins */}
               <View style={styles.titleContainer}>
                 <Text style={GlobalStyles.title}>October Ball</Text>
-                <Text style={GlobalStyles.paragraph}> 23rd October 2020 </Text>
+                <Text style={GlobalStyles.paragraph}> 6th December 2020 </Text>
               </View>
               <View style={styles.dashboard}>
                 <View style={styles.LeftContainer}>

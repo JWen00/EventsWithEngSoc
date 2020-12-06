@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "nemesis2",
+    "name": "Events with ENGSOC",
+    "description": "An app that allows you to use your phone camera to check in attendees of ENGSOC Arc Events",
     "slug": "nemesis2",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -15,14 +16,16 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.engsoc.eventswithengsocnew",
+      "buildNumber": "5"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.engsoc.eventswithengsoc",
-      "versionCode": 2
+      "package": "com.engsoc.eventswithengsocnew",
+      "versionCode": 5
      },
      "scheme": "nemesis2"
   }
