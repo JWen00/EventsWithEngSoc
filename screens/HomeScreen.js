@@ -6,24 +6,20 @@ import {
   Modal,
   TextInput,
   RefreshControl,
-  Image,
-  Button,
   Alert,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Camera } from "expo-camera";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import { ScrollView } from "react-native-gesture-handler";
-import Draggable from "react-native-draggable";
-
 import UserCard from "../components/UserCard";
 import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
 import { ProgressBar } from "react-native-paper";
-// import graphic_vector_image from "../assets/images/home_vg.png";
-//test comment@@@@@@@@@@@@@@@@@@@@@@@@@
+
 export default function HomeScreen() {
   const [openCamera, setCamera] = useState(false);
+  const [cameraPermission, setCameraPermission] = useState(true);
   const [openManualModal, setManualModal] = useState(false);
   const [openAutoModal, setAutoModal] = useState(false);
 
@@ -34,9 +30,13 @@ export default function HomeScreen() {
   const [isRefreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    async () => {
+    let requestCamera = async () => {
       const { status } = await Camera.requestPermissionsAsync();
+      if (status !== 'granted') {
+        setCameraPermission(false);
+      }
     };
+    requestCamera();
     refreshData();
   }, []);
 
@@ -111,7 +111,7 @@ export default function HomeScreen() {
   return (
     <>
       {/* View when camera is open */}
-      {openCamera && (
+      {(openCamera && cameraPermission) && (
         <>
           <Camera
             style={styles.cameraStyle}
@@ -381,7 +381,6 @@ const styles = StyleSheet.create({
     margin: 5,
     flex: 1,
     flexDirection: "row",
-    // justifyContent: "space-evenly",
     alignContent: "center",
   },
 
