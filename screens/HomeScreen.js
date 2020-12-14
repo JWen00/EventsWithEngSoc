@@ -22,12 +22,12 @@ export default function HomeScreen() {
   const [cameraPermission, setCameraPermission] = useState(true);
   const [openManualModal, setManualModal] = useState(false);
   const [openAutoModal, setAutoModal] = useState(false);
-
   const [email, setEmail] = useState("");
   const [zID, setzID] = useState("");
-
   const [internalError, setError] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
+  const [recentSignIns, setSignIns] = useState([]);
+  const [statPercentage, setStatPercentage] = useState();
 
   useEffect(() => {
     let requestCamera = async () => {
@@ -45,9 +45,6 @@ export default function HomeScreen() {
       setTimeout(resolve, timeout);
     });
   };
-
-  const [recentSignIns, setSignIns] = useState([]);
-  const [statPercentage, setStatPercentage] = useState(75);
 
   const refreshData = React.useCallback(() => {
     console.log("Refreshing for home screen");
@@ -160,7 +157,7 @@ export default function HomeScreen() {
             <View>
               {/* Cards showing recent sign-ins */}
               <View style={styles.titleContainer}>
-                <Text style={GlobalStyles.title}>October Ball</Text>
+                <Text style={GlobalStyles.title}>Christmas Party</Text>
                 <Text style={GlobalStyles.paragraph}> 6th December 2020 </Text>
               </View>
               <View style={styles.dashboard}>

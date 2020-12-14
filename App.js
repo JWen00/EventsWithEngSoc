@@ -1,24 +1,35 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import BottomTabNavigator from "./navigation/BottomTabNavigator";
-import useLinking from "./navigation/UseLinking";
+import SignIn from "./screens/SignIn";
 
 const Stack = createStackNavigator();
 
-export default function App(props) {
-  const containerRef = React.useRef();
-  const { getInitialState } = useLinking(containerRef);
-
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  
+  React.useEffect(() => {
+    console.log('rerender')
+  }, [])
+  
+  const login = () => {
+    setIsLoggedIn(true);
+    console.log('this ran successfully', isLoggedIn)
+  }
   return (
     <View style={styles.container}>
-      <NavigationContainer ref={containerRef}>
-        <Stack.Navigator>
-          <Stack.Screen name="Root" component={BottomTabNavigator} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      {isLoggedIn ? 
+        <NavigationContainer >
+          <Stack.Navigator>
+            <Stack.Screen name="Root" component={BottomTabNavigator} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        :
+        <SignIn login={() => login()}/>
+      }     
+      <Text>{isLoggedIn ? console.log('hi') : console.log('bye')}</Text>                         
     </View>
   );
 }
