@@ -27,7 +27,9 @@ export default function HomeScreen() {
   const [internalError, setError] = useState(false);
   const [isRefreshing, setRefreshing] = useState(false);
   const [recentSignIns, setSignIns] = useState([]);
-  const [statPercentage, setStatPercentage] = useState();
+  const [statPercentage, setStatPercentage] = useState(0);
+  const [nonSignIns, setNonSignIns] = useState(0);
+  const [totalAttendees, setTotalAttendees] = useState(0);
 
   useEffect(() => {
     let requestCamera = async () => {
@@ -59,10 +61,12 @@ export default function HomeScreen() {
       })
       .catch((error) => console.log(error));
 
-    fetch("https://nemesis2.dev.unswengsoc.com/signedinpercentage")
+    fetch("https://nemesis2.dev.unswengsoc.com/statistics")
       .then((res) => res.json())
       .then((data) => {
         setStatPercentage(data.signedinpercentage);
+        setNonSignIns(data.non_signins);
+        setTotalAttendees(data.total_attendees);
       })
       .catch((error) => setError(true));
 
@@ -181,7 +185,7 @@ export default function HomeScreen() {
                 <View style={styles.RightContainer}>
                   <View style={styles.RightContainerChild}>
                     <Icon size={30} focused={Colors.primeRed} name="md-alert" />
-                    <Text style={GlobalStyles.paragraph}>40 not signed in</Text>
+                    <Text style={GlobalStyles.paragraph}>{nonSignIns} of {totalAttendees} not signed in</Text>
                   </View>
                   <TouchableOpacity
                     style={styles.RightContainerChild}
