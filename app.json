@@ -2,7 +2,7 @@
   "expo": {
     "name": "Events with EngSoc",
     "description": "An app that allows you to use your phone camera to check in attendees of ENGSOC Arc Events",
-    "slug": "nemesis2",
+    "slug": "eventsWithEngsoc",
     "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/appstore_icon.png",

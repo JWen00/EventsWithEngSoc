@@ -16,8 +16,10 @@ import UserCard from "../components/UserCard";
 import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
 import { ProgressBar } from "react-native-paper";
+import { connect } from "react-redux";
+import { checkinAttendee } from "../actions/attendeeActions";
 
-export default function HomeScreen() {
+function HomeScreen({ attendeeList, checkinAttendee }) {
   const [openCamera, setCamera] = useState(false);
   const [cameraPermission, setCameraPermission] = useState(true);
   const [openManualModal, setManualModal] = useState(false);
@@ -200,7 +202,7 @@ export default function HomeScreen() {
               </View>
 
               <Text style={GlobalStyles.subtitle}>Recent Sign ins</Text>
-              {recentSignIns.map((person) => (
+              {recentSignIns.map((person, idx) => (
                 <UserCard
                   fname={person.first_name}
                   lname={person.last_name}
@@ -209,6 +211,7 @@ export default function HomeScreen() {
                   paid={person.paid}
                   time={person.checked_in_time}
                   info={person.information}
+                  key={idx}
                 />
               ))}
 
@@ -238,6 +241,7 @@ export default function HomeScreen() {
                     setManualModal(false);
                     setzID("");
                     setEmail("");
+                    checkinAttendee();
                   }}
                 >
                   <Icon size={35} focused={Colors.darkGrey} name="md-trash" />
@@ -497,3 +501,17 @@ const styles = StyleSheet.create({
     marginTop: 0
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    attendeeList: state.attendee.attendees
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    checkinAttendee: () => dispatch(checkinAttendee())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

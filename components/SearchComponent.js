@@ -111,7 +111,7 @@ export default function SearchComponent(props) {
                 result.zid.includes(q)
               );
             })
-            .map((person) => (
+            .map((person, idx) => (
               <UserCard
                 fname={person.first_name}
                 lname={person.last_name}
@@ -122,12 +122,13 @@ export default function SearchComponent(props) {
                 info={person.information}
                 checkoutUser={props.checkoutUser}
                 setConfirmation={props.setConfirmation}
+                key={idx}
               />
             ))}
         </View>
       ) : (
         <View style={styles.resultList}>
-          {tmpList.map((person) => (
+          {tmpList.map((person, idx) => (
             <UserCard
               fname={person.first_name}
               lname={person.last_name}
@@ -138,6 +139,7 @@ export default function SearchComponent(props) {
               info={person.information}
               checkoutUser={props.checkoutUser}
               setConfirmation={props.setConfirmation}
+              key={idx}
             />
           ))}
         </View>

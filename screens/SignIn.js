@@ -1,41 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image, Button } from "react-native";
-import * as Google from "expo-google-app-auth";
 import Colors from "../constants/Colors";
-import Icon from '../components/Icon';
+import { connect } from "react-redux";
+import { login } from "../actions/signinActions"
 
-export default function SignIn({ login }) {
-  const [token, setToken] = React.useState();
-  const config = {
-    iosClientId: '974954981551-citqv0p5j18ug0fk0uc0ki6p5adf3is3.apps.googleusercontent.com',
-    androidClientId: '974954981551-0l4cp333kfbsooqgcvk9jjsg19ovj4ic.apps.googleusercontent.com',
-    androidStandaloneAppClientId: '974954981551-jcneghk2q4b9656usi3v0rk6ebrjnbhv.apps.googleusercontent.com',
-    iosStandaloneAppClientId: "974954981551-lofkso32ge67nkbhsvnuqs2l0uf5bv8n.apps.googleusercontent.com"
-  }
-
-  const googleSignIn = async () => {
-    try {
-      const result = await Google.logInAsync({
-        ...config,
-        scopes: ["profile", "email"]
-      });
-      if (result.type === "success") {
-        console.log('@@@@@', result.user.givenName);
-        login();
-        return result.accessToken;
-      } else {
-        // await Google.logOutAsync({
-        //   ...config,
-        //   accessToken: token
-        // });
-        console.log('small broke!!!!', result)
-        return {'cancelled': true};
-      }
-    } catch (e) {
-      console.log(e, 'big broke!!!!!!')
-    }
-  };
-
+function SignIn({ login }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -49,7 +18,7 @@ export default function SignIn({ login }) {
       </View>
       <Button
         title="Login with Google"
-        onPress={() => googleSignIn()}
+        onPress={() => login()}
       />
     </View>
   )
@@ -78,11 +47,17 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   header: {
-    // width: "100%",
-    // height: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 20
   },
 });
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: () => dispatch(login())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(SignIn);
