@@ -1,4 +1,4 @@
-import { CHECKIN_ATTENDEE, SET_CHECKOUT } from './actionTypes';
+import { CHECKIN_ATTENDEE, SET_CHECKOUT, SET_CHECKOUTMODAL } from './actionTypes';
 
 const checkinAttendee = () => {
   return {
@@ -13,4 +13,11 @@ const setCheckout = (zid) => {
   }
 } 
 
-export { checkinAttendee, setCheckout };
+const setCheckoutModal = (toShow) => {
+  return {
+    type: SET_CHECKOUTMODAL,
+    payload: toShow
+  }
+} 
+
+export { checkinAttendee, setCheckout, setCheckoutModal };

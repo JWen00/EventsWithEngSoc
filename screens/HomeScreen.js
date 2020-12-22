@@ -17,9 +17,9 @@ import Colors from "../constants/Colors";
 import Icon from "../components/Icon";
 import { ProgressBar } from "react-native-paper";
 import { connect } from "react-redux";
-import { checkinAttendee } from "../actions/attendeeActions";
+import CheckoutModal from "../components/CheckoutModal";
 
-function HomeScreen({ attendeeList, checkinAttendee }) {
+function HomeScreen({ attendeeList, showCheckoutModal, checkinAttendee }) {
   const [openCamera, setCamera] = useState(false);
   const [cameraPermission, setCameraPermission] = useState(true);
   const [openManualModal, setManualModal] = useState(false);
@@ -59,7 +59,7 @@ function HomeScreen({ attendeeList, checkinAttendee }) {
         if (internalError) {
           setError(false);
         }
-        setSignIns(data);
+        setSignIns(data.reverse());
       })
       .catch((error) => console.log(error));
 
@@ -161,10 +161,11 @@ function HomeScreen({ attendeeList, checkinAttendee }) {
             style={GlobalStyles.contentContainer}
           >
             <View>
+              {showCheckoutModal && <CheckoutModal/>}
               {/* Cards showing recent sign-ins */}
               <View style={styles.titleContainer}>
-                <Text style={GlobalStyles.title}>Christmas Party</Text>
-                <Text style={GlobalStyles.paragraph}> 6th December 2020 </Text>
+                <Text style={GlobalStyles.title}>EngSoc Camp</Text>
+                <Text style={GlobalStyles.paragraph}>30th March 2021</Text>
               </View>
               <View style={styles.dashboard}>
                 <View style={styles.LeftContainer}>
@@ -504,14 +505,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    attendeeList: state.attendee.attendees
+    attendeeList: state.attendee.attendees,    
+    showCheckoutModal: state.attendee.checkoutModal
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    checkinAttendee: () => dispatch(checkinAttendee())
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+
+export default connect(mapStateToProps)(HomeScreen);

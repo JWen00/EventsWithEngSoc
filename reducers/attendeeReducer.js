@@ -1,10 +1,11 @@
-import { CHECKIN_ATTENDEE, SET_CHECKOUT } from '../actions/actionTypes';
+import { CHECKIN_ATTENDEE, SET_CHECKOUT, SET_CHECKOUTMODAL } from '../actions/actionTypes';
 
 const initialState = {
   attendees: [],
   loading: false,
   error: '',
-  toCheckout: ''
+  toCheckout: '',
+  checkoutModal: false,
 };
 
 const attendeeReducer = (state = initialState, action) => {
@@ -15,6 +16,11 @@ const attendeeReducer = (state = initialState, action) => {
       return {
         ...state,
         toCheckout: action.payload
+      };
+    case SET_CHECKOUTMODAL:
+      return {
+        ...state,
+        checkoutModal: action.payload
       }
     default: 
       return state;

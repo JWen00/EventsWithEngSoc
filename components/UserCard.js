@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { Text, View, StyleSheet, Button, Alert } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
-
 import { GlobalStyles } from "../constants/GlobalStyles";
 import Icon from "../components/Icon";
 import Colors from "../constants/Colors";
+import { setCheckoutModal, setCheckout } from "../actions/attendeeActions";
+import { connect } from "react-redux";
 
 // Takes in [fname, lname, checked_in, paid, time]
-export default function UserCard(props) {
+function UserCard(props) {
   const [isExpanded, setExpanded] = useState(false);
   return (
     <TouchableOpacity
@@ -53,8 +54,8 @@ export default function UserCard(props) {
               </Text>
             </View>
             {props.checked_in && (<TouchableWithoutFeedback onPress={() => {
-                props.checkoutUser(props.zid);
-                props.setConfirmation(true);
+                props.setCheckout(props.zid);
+                props.openModal();
               }}>
                 <Icon size={36} focused={Colors.dangerRed} name="md-log-out" />
             </TouchableWithoutFeedback>)}
@@ -106,3 +107,12 @@ const styles = StyleSheet.create({
     width: 200,
   }
 });
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    openModal: () => dispatch(setCheckoutModal(true)),
+    setCheckout: (zid) => dispatch(setCheckout(zid)) 
+  }
+}
+
+export default connect(null, mapDispatchToProps)(UserCard);

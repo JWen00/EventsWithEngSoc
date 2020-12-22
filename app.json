@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "Events with EngSoc",
-    "description": "An app that allows you to use your phone camera to check in attendees of ENGSOC Arc Events",
+    "description": "An app that allows you to use your phone camera to check in attendees of EngSoc Arc Events",
     "slug": "eventsWithEngsoc",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/images/appstore_icon.png",
     "splash": {
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.engsoc.eventswithengsocnew",
-      "buildNumber": "6",
+      "buildNumber": "7",
       "config": {
         "googleSignIn": {
           "reservedClientId": "com.googleusercontent.apps.974954981551-lofkso32ge67nkbhsvnuqs2l0uf5bv8n"
@@ -36,7 +36,7 @@
         }
       },
       "package": "com.engsoc.eventswithengsocnew",
-      "versionCode": 6
+      "versionCode": 7
      },
      "scheme": "nemesis2"
   }

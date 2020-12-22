@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, RefreshControl, Modal, Text, StyleSheet, Button, Alert } from "react-native";
+import { View, RefreshControl } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { GlobalStyles } from "../constants/GlobalStyles";
 import SearchComponent from "../components/SearchComponent";
-import Colors from "../constants/Colors";
+import CheckoutModal from "../components/CheckoutModal";
+import { connect } from "react-redux";
 
-
-export default function AttendeeScreen() {
+function AttendeeScreen({showCheckoutModal, setCheckout}) {
   const [refreshing, setRefreshing] = useState(false);
   const [attendeeData, setData] = useState([]);
   const [internalError, setError] = useState(false);
-  const [openConfirmation, setConfirmation] = useState(false);
-  const [toCheckout, setToCheckout] = useState("");
 
   const wait = (timeout) => {
     return new Promise((resolve) => {
@@ -19,7 +17,11 @@ export default function AttendeeScreen() {
     });
   };
 
-  const refresh = useEffect(() => {
+  useEffect(() => {
+    refresh();
+  }, [])
+
+  const refresh = React.useCallback(() => {
     console.log("Rerendering attendee screen...");
     setRefreshing(true);
     fetch("https://nemesis2.dev.unswengsoc.com/attendees")
@@ -35,101 +37,25 @@ export default function AttendeeScreen() {
     wait(1500).then(() => setRefreshing(false));
   }, []);
 
-  async function checkoutAlert() {
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({ zid: toCheckout.toString() });
-    var requestOptions = {
-      method: "PUT",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    const response = await fetch("https://nemesis2.dev.unswengsoc.com/checkout", requestOptions);
-    const message = await response.json();
-    const successMessage = message.code == 200 ? "Success" : "Something went wrong"; 
-    const reason = message.response == "OK" ? "User has been successfully checked out" : message.response;
-    return Alert.alert(
-      successMessage,
-      reason,
-      [
-        { text: "OK", 
-          onPress: () => {
-            setConfirmation(false);
-            setToCheckout("");
-        }
-      }
-      ],
-      { cancelable: false }
-    );
-  };
-
   return (
     <View style={GlobalStyles.contentContainer}>
-      {openConfirmation && (<Modal
-          animationType="slide"
-          transparent={true}
-          visible={openConfirmation}
-          onRequestClose={() => {
-            setConfirmation(false);
-          }}
-        >
-          <View style={styles.modalContainer}>
-            <Text style={styles.confirmationText}>Are you sure you want to checkout this attendee?</Text>
-            <View style={styles.buttonContainer}>
-              <Button style={styles.modalButton} onPress={checkoutAlert} title={"Yes"}/>
-              <Button style={styles.modalButton} onPress={() => setConfirmation(false)} title={"No"}/>
-            </View>
-          </View>
-        </Modal>)}
+      {showCheckoutModal && <CheckoutModal />}
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={refresh} />
         }
       >
-        <SearchComponent list={attendeeData} checkoutUser={setToCheckout} setConfirmation={setConfirmation}/>
+        <SearchComponent list={attendeeData} />
       </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    justifyContent: "space-between",
-    alignItems: "center",
-    margin: 20,
-    top: 220,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    shadowColor: "black",
-    elevation: 200,
-    height: 150,
-    paddingBottom: 35,
-    paddingTop: 25,
-    borderWidth: 1,
-    borderColor: Colors.veryLightGrey,
-    backfaceVisibility: "hidden",
-  },
-
-  buttonContainer: {
-    height: 60,
-    width: 120,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  modalButton: {
-    borderWidth: 1,
-    borderColor: Colors.darkGrey,
-    borderRadius: 15,
-  },
-
-  confirmationText: {
-    fontSize: 20,
-    textAlign: 'center'
+const mapStateToProps = (state) => {
+  return {
+    showCheckoutModal: state.attendee.checkoutModal
   }
+}
 
-});
+
+export default connect(mapStateToProps)(AttendeeScreen);
