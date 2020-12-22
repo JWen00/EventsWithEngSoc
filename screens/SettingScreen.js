@@ -18,9 +18,10 @@ function SettingScreen() {
       <Text style={styles.farewellText}>
         A huge thank you to my team (Jennifer
         and Smit) who helped me all year to make this possible. 
+        We hope you enjoy using the app :)
       </Text>
       <Text style={styles.farewellText}>
-          - Richard Wang, Jennifer Xu, Smit Dobaria (EngSoc 2020)
+          - Richard, Jennifer, Smit (EngSoc IT 2020) 
       </Text>
     </View>
   );
