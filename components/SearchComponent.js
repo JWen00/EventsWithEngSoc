@@ -18,9 +18,6 @@ export default function SearchComponent(props) {
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    console.log("Rerendering list...");
-    console.log(" >>> Paid Status: " + filterPaid);
-    console.log(" >>> Checked In Status: " + filterCheckedIn);
     setList(props.list);
     if (filterPaid == false && filterCheckedIn == false) {
       setTmpList(props.list);
@@ -71,32 +68,6 @@ export default function SearchComponent(props) {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* Search Filters */}
-      {/* <View style={styles.filterContainer}>
-        <Chip
-          selected={filterPaid}
-          selectedColor={Colors.navyBlue}
-          style={styles.filterContent}
-          onPress={() => {
-            setFilterPaid(!filterPaid);
-            console.log("filter paid: " + filterPaid);
-          }}
-        >
-          Paid
-        </Chip>
-        <Chip
-          selected={filterCheckedIn}
-          selectedColor={Colors.navyBlue}
-          style={styles.filterContent}
-          onPress={() => {
-            setFilterCheckedIn(!filterCheckedIn);
-            console.log("filter checked in: " + filterCheckedIn);
-          }}
-        >
-          Checked-In
-        </Chip>
-      </View> */}
 
       {/* Show results of search */}
       {isFocused ? (

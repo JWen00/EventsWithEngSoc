@@ -8,7 +8,6 @@ const initialState = {
 const signinReducer = (state = initialState, action) => {
   switch(action.type) {
     case LOGIN_SUCCESS:
-      console.log('when i go');
       return {
         ...state,
         loading: false,
