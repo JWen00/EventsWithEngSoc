@@ -13,7 +13,7 @@ function SettingScreen() {
         Our team had several ideas which we unfortunately ran out of time to add. Perhaps future IT could look to implement 
         being able to switch between events (so that events happening simultaneously can be handled),
         NFC implementation (think this is only possible on Android), checking in people who randomly rock up and haven't pre-registered
-        and somehow making this available to all societies in UNSW.
+        or even making this an app all UNSW societies can use.
       </Text>
       <Text style={styles.farewellText}>
         A huge thank you to my team (Jennifer
